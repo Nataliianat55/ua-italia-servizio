@@ -1,1 +1,127 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UA Italia Servizio — Українські фахівці в Італії</title>
+    <!-- Tailwind CSS для швидкого та стильного дизайну -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        /* Екран завантаження (анімація) */
+        #splash-screen {
+            transition: opacity 0.5s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
 
+    <!-- 1. Екран завантаження (Splash Screen з анімацією) -->
+    <div id="splash-screen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
+        <div class="animate-pulse text-center">
+            <h1 class="text-3xl font-bold text-blue-900 tracking-tight">UA Italia Servizio</h1>
+            <p class="text-sm text-gray-500 mt-2">Українські фахівці в Італії / Professionisti ucraini in Italia</p>
+        </div>
+    </div>
+
+    <!-- Шапка сайту -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-30">
+        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+            <span class="font-bold text-lg text-blue-900">UA Italia Servizio</span>
+            <div class="flex items-center gap-2">
+                <!-- Перемикач мов -->
+                <button onclick="switchLanguage('uk')" id="btn-uk" class="text-xs px-2 py-1 rounded bg-blue-900 text-white font-medium">UA</button>
+                <button onclick="switchLanguage('it')" id="btn-it" class="text-xs px-2 py-1 rounded bg-gray-200 text-gray-700 font-medium">IT</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основний контент (Мобільний формат) -->
+    <main class="max-w-md mx-auto px-4 py-4 flex-grow w-full">
+        
+        <!-- Банер для фахівців -->
+        <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-5 flex items-center justify-between">
+            <div>
+                <h2 id="text-banner-title" class="font-semibold text-blue-900 text-sm">Ти фахівець в Італії?</h2>
+                <p id="text-banner-sub" class="text-xs text-blue-700 mt-0.5">Додай свої послуги до каталогу</p>
+            </div>
+            <button onclick="openSpecialistForm()" id="btn-join" class="bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow-sm hover:bg-blue-700 transition">Долучитись</button>
+        </div>
+
+        <!-- Пошук та фільтри -->
+        <div class="space-y-3 mb-5">
+            <input type="text" id="search-input" placeholder="Пошук послуги або фахівця..." class="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
+            
+            <div class="flex gap-2 overflow-x-auto pb-1 text-xs">
+                <select id="region-filter" class="bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
+                    <option value="">Вся Італія / Tutta Italia</option>
+                    <option value="Lombardia">Lombardia (Мілан та ін.)</option>
+                    <option value="Lazio">Lazio (Рим та ін.)</option>
+                    <option value="Emilia-Romagna">Emilia-Romagna (Болонья, Парма)</option>
+                    <option value="Veneto">Veneto</option>
+                </select>
+
+                <select id="category-filter" class="bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
+                    <option value="">Усі категорії / Tutte le categorie</option>
+                    <option value="auto">🚗 Авто</option>
+                    <option value="bureaucracy">📄 Документи та легалізація</option>
+                    <option value="beauty">💅 Краса та здоров'я</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Стрічка карток фахівців -->
+        <div id="specialists-list" class="space-y-3">
+            <!-- Сюди динамічно завантажуватимуться картки -->
+        </div>
+
+    </main>
+
+    <!-- Скріпт для роботи анімації, мов та фільтрів -->
+    <script>
+        // Прибираємо екран завантаження через 0.8 секунди для красивого ефекту
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 500);
+            }, 800);
+        });
+
+        // Базовий переклад мов (UA / IT)
+        const translations = {
+            uk: {
+                bannerTitle: "Ти фахівець в Італії?",
+                bannerSub: "Додай свої послуги до каталогу",
+                joinBtn: "Долучитись",
+                searchPlaceholder: "Пошук послуги або фахівця...",
+                allRegions: "Вся Італія / Tutta Italia",
+                allCategories: "Усі категорії"
+            },
+            it: {
+                bannerTitle: "Sei un professionista in Italia?",
+                bannerSub: "Aggiungi i tuoi servizi al catalogo",
+                joinBtn: "Unisciti",
+                searchPlaceholder: "Cerca servizio o professionista...",
+                allRegions: "Tutta Italia",
+                allCategories: "Tutte le categorie"
+            }
+        };
+
+        function switchLanguage(lang) {
+            document.getElementById('btn-uk').className = lang === 'uk' ? 'text-xs px-2 py-1 rounded bg-blue-900 text-white font-medium' : 'text-xs px-2 py-1 rounded bg-gray-200 text-gray-700 font-medium';
+            document.getElementById('btn-it').className = lang === 'it' ? 'text-xs px-2 py-1 rounded bg-blue-900 text-white font-medium' : 'text-xs px-2 py-1 rounded bg-gray-200 text-gray-700 font-medium';
+
+            document.getElementById('text-banner-title').innerText = translations[lang].bannerTitle;
+            document.getElementById('text-banner-sub').innerText = translations[lang].bannerSub;
+            document.getElementById('btn-join').innerText = translations[lang].joinBtn;
+            document.getElementById('search-input').placeholder = translations[lang].searchPlaceholder;
+        }
+
+        function openSpecialistForm() {
+            alert("Форма заявки для фахівця (тут буде модальне вікно для відправки на модерацію)");
+        }
+    </script>
+</body>
+</html>
