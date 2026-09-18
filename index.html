@@ -4,24 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UA Italia Servizio — Українські фахівці в Італії</title>
-    <!-- Tailwind CSS для швидкого та стильного дизайну -->
+    <!-- Tailwind CSS для стилізації -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        /* Екран завантаження (анімація) */
-        #splash-screen {
-            transition: opacity 0.5s ease;
-        }
+        #splash-screen { transition: opacity 0.5s ease; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
 
-    <!-- 1. Екран завантаження (Splash Screen з анімацією) -->
+    <!-- 1. Екран завантаження (Splash Screen) -->
     <div id="splash-screen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
         <div class="animate-pulse text-center">
             <h1 class="text-3xl font-bold text-blue-900 tracking-tight">UA Italia Servizio</h1>
-            <p class="text-sm text-gray-500 mt-2">Українські фахівці в Італії / Professionisti ucraini in Italia</p>
+            <p class="text-sm text-gray-500 mt-2">Українські фахівці в Італії / Professionisti ucraini</p>
         </div>
     </div>
 
@@ -30,83 +27,143 @@
         <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
             <span class="font-bold text-lg text-blue-900">UA Italia Servizio</span>
             <div class="flex items-center gap-2">
-                <!-- Перемикач мов -->
                 <button onclick="switchLanguage('uk')" id="btn-uk" class="text-xs px-2 py-1 rounded bg-blue-900 text-white font-medium">UA</button>
                 <button onclick="switchLanguage('it')" id="btn-it" class="text-xs px-2 py-1 rounded bg-gray-200 text-gray-700 font-medium">IT</button>
             </div>
         </div>
     </header>
 
-    <!-- Основний контент (Мобільний формат) -->
+    <!-- Основний контент -->
     <main class="max-w-md mx-auto px-4 py-4 flex-grow w-full">
         
         <!-- Банер для фахівців -->
-        <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-5 flex items-center justify-between">
+        <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-5 flex items-center justify-between shadow-sm">
             <div>
                 <h2 id="text-banner-title" class="font-semibold text-blue-900 text-sm">Ти фахівець в Італії?</h2>
                 <p id="text-banner-sub" class="text-xs text-blue-700 mt-0.5">Додай свої послуги до каталогу</p>
             </div>
-            <button onclick="openSpecialistForm()" id="btn-join" class="bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow-sm hover:bg-blue-700 transition">Долучитись</button>
+            <button onclick="openModal()" id="btn-join" class="bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow hover:bg-blue-700 transition">Долучитись</button>
         </div>
 
         <!-- Пошук та фільтри -->
         <div class="space-y-3 mb-5">
-            <input type="text" id="search-input" placeholder="Пошук послуги або фахівця..." class="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
+            <input type="text" id="search-input" oninput="filterSpecialists()" placeholder="Пошук послуги або фахівця..." class="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
             
-            <div class="flex gap-2 overflow-x-auto pb-1 text-xs">
-                <select id="region-filter" class="bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
-                    <option value="">Вся Італія / Tutta Italia</option>
-                    <option value="Lombardia">Lombardia (Мілан та ін.)</option>
-                    <option value="Lazio">Lazio (Рим та ін.)</option>
-                    <option value="Emilia-Romagna">Emilia-Romagna (Болонья, Парма)</option>
-                    <option value="Veneto">Veneto</option>
+            <div class="flex gap-2 text-xs">
+                <select id="region-filter" onchange="filterSpecialists()" class="w-1/2 bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
+                    <option value="">Вся Італія</option>
+                    <option value="Lombardia">Lombardia</option>
+                    <option value="Lazio">Lazio</option>
+                    <option value="Emilia-Romagna">Emilia-Romagna</option>
                 </select>
 
-                <select id="category-filter" class="bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
-                    <option value="">Усі категорії / Tutte le categorie</option>
+                <select id="category-filter" onchange="filterSpecialists()" class="w-1/2 bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
+                    <option value="">Усі категорії</option>
                     <option value="auto">🚗 Авто</option>
-                    <option value="bureaucracy">📄 Документи та легалізація</option>
-                    <option value="beauty">💅 Краса та здоров'я</option>
+                    <option value="bureaucracy">📄 Документи</option>
+                    <option value="beauty">💅 Краса</option>
                 </select>
             </div>
         </div>
 
         <!-- Стрічка карток фахівців -->
         <div id="specialists-list" class="space-y-3">
-            <!-- Сюди динамічно завантажуватимуться картки -->
+            <!-- Сюди динамічно завантажуються картки -->
         </div>
 
     </main>
 
-    <!-- Скріпт для роботи анімації, мов та фільтрів -->
+    <!-- Модальне вікно для реєстрації фахівця -->
+    <div id="specialist-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-blue-900 text-base">Анкета фахівця</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 font-bold text-sm">✕</button>
+            </div>
+            <p class="text-xs text-gray-500">Ваша заявка потрапить на модерацію та з'явиться в каталозі після перевірки.</p>
+            
+            <div class="space-y-3 text-xs">
+                <input type="text" id="spec-name" placeholder="Ім'я / Назва послуги" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+                <input type="text" id="spec-cat" placeholder="Категорія (auto, bureaucracy, beauty)" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+                <input type="text" id="spec-loc" placeholder="Регіон / Місто (напр. Lombardia, Мілан)" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+                <input type="text" id="spec-link" placeholder="Посилання на портфоліо / Instagram" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+                <button onclick="submitSpecialist()" class="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-700 transition">Надіслати на перевірку</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Скріпт логіки -->
     <script>
-        // Прибираємо екран завантаження через 0.8 секунди для красивого ефекту
+        // Демо-база фахівців (тестові картки)
+        const specialists = [
+            { id: 1, name: "Андрій Автосервіс", category: "auto", region: "Lombardia", status: "Офлайн (Мілан)", desc: "Ремонт ходової, комп'ютерна діагностика, допомога на дорозі.", link: "https://instagram.com" },
+            { id: 2, name: "Олена | Документи & SPID", category: "bureaucracy", region: "Lazio", status: "Онлайн по всій Італії", desc: "Допомога з оформленням дозволів, записи до квестур, переклади.", link: "https://t.me" },
+            { id: 3, name: "Ірина Hair Studio", category: "beauty", region: "Emilia-Romagna", status: "Офлайн (Парма)", desc: "Сучасні стрижки, фарбування, догляд за волоссям.", link: "https://instagram.com" }
+        ];
+
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
                 setTimeout(() => splash.style.display = 'none', 500);
             }, 800);
+            renderSpecialists(specialists);
         });
 
-        // Базовий переклад мов (UA / IT)
-        const translations = {
-            uk: {
-                bannerTitle: "Ти фахівець в Італії?",
-                bannerSub: "Додай свої послуги до каталогу",
-                joinBtn: "Долучитись",
-                searchPlaceholder: "Пошук послуги або фахівця...",
-                allRegions: "Вся Італія / Tutta Italia",
-                allCategories: "Усі категорії"
-            },
-            it: {
-                bannerTitle: "Sei un professionista in Italia?",
-                bannerSub: "Aggiungi i tuoi servizi al catalogo",
-                joinBtn: "Unisciti",
-                searchPlaceholder: "Cerca servizio o professionista...",
-                allRegions: "Tutta Italia",
-                allCategories: "Tutte le categorie"
+        function renderSpecialists(data) {
+            const listContainer = document.getElementById('specialists-list');
+            listContainer.innerHTML = '';
+
+            if (data.length === 0) {
+                listContainer.innerHTML = '<p class="text-center text-xs text-gray-400 py-6">Нічого не знайдено / Nessun risultato</p>';
+                return;
             }
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow transition space-y-2";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <h3 class="font-semibold text-sm text-gray-900">${item.name}</h3>
+                        <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium">${item.status}</span>
+                    </div>
+                    <p class="text-xs text-gray-600">${item.desc}</p>
+                    <div class="flex justify-between items-center pt-2 border-t border-gray-50 text-xs">
+                        <span class="text-gray-400">📍 ${item.region}</span>
+                        <a href="${item.link}" target="_blank" class="bg-blue-50 text-blue-600 font-semibold px-3 py-1.5 rounded-xl hover:bg-blue-100 transition">Портфоліо / Контакт ➔</a>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
+        }
+
+        function filterSpecialists() {
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const regionVal = document.getElementById('region-filter').value;
+            const categoryVal = document.getElementById('category-filter').value;
+
+            const filtered = specialists.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchVal) || item.desc.toLowerCase().includes(searchVal);
+                const matchesRegion = regionVal === "" || item.region === regionVal;
+                const matchesCategory = categoryVal === "" || item.category === categoryVal;
+                return matchesSearch && matchesRegion && matchesCategory;
+            });
+
+            renderSpecialists(filtered);
+        }
+
+        function openModal() { document.getElementById('specialist-modal').classList.remove('hidden'); }
+        function closeModal() { document.getElementById('specialist-modal').classList.add('hidden'); }
+
+        function submitSpecialist() {
+            alert("Дякуємо! Ваша заявка надіслана на ручну модерацію.");
+            closeModal();
+        }
+
+        // Перемикач мов
+        const translations = {
+            uk: { bannerTitle: "Ти фахівець в Італії?", bannerSub: "Додай свої послуги до каталогу", joinBtn: "Долучитись", searchPlaceholder: "Пошук послуги або фахівця..." },
+            it: { bannerTitle: "Sei un professionista in Italia?", bannerSub: "Aggiungi i tuoi servizi al catalogo", joinBtn: "Unisciti", searchPlaceholder: "Cerca servizio o professionista..." }
         };
 
         function switchLanguage(lang) {
@@ -117,10 +174,6 @@
             document.getElementById('text-banner-sub').innerText = translations[lang].bannerSub;
             document.getElementById('btn-join').innerText = translations[lang].joinBtn;
             document.getElementById('search-input').placeholder = translations[lang].searchPlaceholder;
-        }
-
-        function openSpecialistForm() {
-            alert("Форма заявки для фахівця (тут буде модальне вікно для відправки на модерацію)");
         }
     </script>
 </body>
