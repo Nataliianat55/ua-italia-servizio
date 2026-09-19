@@ -4,28 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UA Italia Servizio — Українські фахівці в Італії</title>
-    <!-- Tailwind CSS для стилізації -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Leaflet CSS (для мапи) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        #splash-screen { transition: opacity 0.5s ease; }
+        .page { transition: all 0.3s ease-in-out; }
+        #map { height: 350px; width: 100%; border-radius: 1rem; z-index: 10; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
-
-    <!-- 1. Екран завантаження (Splash Screen) -->
-    <div id="splash-screen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
-        <div class="animate-pulse text-center">
-            <h1 class="text-3xl font-bold text-blue-900 tracking-tight">UA Italia Servizio</h1>
-            <p class="text-sm text-gray-500 mt-2">Українські фахівці в Італії / Professionisti ucraini</p>
-        </div>
-    </div>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col justify-between">
 
     <!-- Шапка сайту -->
     <header class="bg-white border-b border-gray-100 sticky top-0 z-30">
         <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-            <span class="font-bold text-lg text-blue-900">UA Italia Servizio</span>
+            <span onclick="showPage('welcome-page')" class="font-bold text-lg text-blue-900 cursor-pointer">UA Italia Servizio</span>
             <div class="flex items-center gap-2">
                 <button onclick="switchLanguage('uk')" id="btn-uk" class="text-xs px-2 py-1 rounded bg-blue-900 text-white font-medium">UA</button>
                 <button onclick="switchLanguage('it')" id="btn-it" class="text-xs px-2 py-1 rounded bg-gray-200 text-gray-700 font-medium">IT</button>
@@ -33,111 +30,154 @@
         </div>
     </header>
 
-    <!-- Основний контент -->
-    <main class="max-w-md mx-auto px-4 py-4 flex-grow w-full">
-        
-        <!-- Банер для фахівців -->
-        <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-5 flex items-center justify-between shadow-sm">
-            <div>
-                <h2 id="text-banner-title" class="font-semibold text-blue-900 text-sm">Ти фахівець в Італії?</h2>
-                <p id="text-banner-sub" class="text-xs text-blue-700 mt-0.5">Додай свої послуги до каталогу</p>
+    <!-- ОСНОВНИЙ КОНТЕНТ -->
+    <main class="max-w-md mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- ЕКРАН 1: Привітання та Пошук -->
+        <div id="welcome-page" class="page space-y-6">
+            <div class="text-center space-y-2 py-4">
+                <h1 id="text-welcome-title" class="text-2xl font-bold text-blue-900">Вітаємо у UA Italia Servizio</h1>
+                <p id="text-welcome-sub" class="text-xs text-gray-500 leading-relaxed">
+                    Знайдіть перевірених українських фахівців по всій Італії або запропонуйте власні послуги спільноті.
+                </p>
             </div>
-            <button onclick="openModal()" id="btn-join" class="bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow hover:bg-blue-700 transition">Долучитись</button>
+
+            <!-- Банер для фахівців -->
+            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                <div>
+                    <h2 id="text-banner-title" class="font-semibold text-blue-900 text-xs">Ти фахівець в Італії?</h2>
+                    <p id="text-banner-sub" class="text-[11px] text-blue-700 mt-0.5">Додай свої послуги до каталогу</p>
+                </div>
+                <button onclick="openModal()" id="btn-join" class="bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-xl hover:bg-blue-700 transition">Долучитись</button>
+            </div>
+
+            <!-- Форма пошуку -->
+            <div class="bg-white p-4 border border-gray-100 rounded-2xl shadow-sm space-y-3">
+                <h2 id="text-search-heading" class="text-xs font-bold text-gray-700 uppercase tracking-wider">Пошук фахівця</h2>
+                
+                <input type="text" id="search-input" placeholder="Що ви шукаєте? (напр. авто, манікюр)..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
+
+                <div class="space-y-2">
+                    <select id="region-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none">
+                        <option value="">Всі регіони Італії / Tutta Italia</option>
+                        <option value="Lombardia">Lombardia (Мілан)</option>
+                        <option value="Lazio">Lazio (Рим)</option>
+                        <option value="Emilia-Romagna">Emilia-Romagna (Болонья, Парма)</option>
+                    </select>
+
+                    <select id="category-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none">
+                        <option value="">Усі категорії / Tutte le categorie</option>
+                        <option value="auto">🚗 Автомобільні послуги</option>
+                        <option value="bureaucracy">📄 Документи та легалізація</option>
+                        <option value="beauty">💅 Краса та здоров'я</option>
+                    </select>
+                </div>
+
+                <button onclick="startSearch()" id="btn-find" class="w-full bg-blue-900 text-white font-semibold py-3 rounded-xl text-xs hover:bg-blue-800 transition shadow">
+                    Шукати фахівців ➔
+                </button>
+            </div>
         </div>
 
-        <!-- Пошук та фільтри -->
-        <div class="space-y-3 mb-5">
-            <input type="text" id="search-input" oninput="filterSpecialists()" placeholder="Пошук послуги або фахівця..." class="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
-            
-            <div class="flex gap-2 text-xs">
-                <select id="region-filter" onchange="filterSpecialists()" class="w-1/2 bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
-                    <option value="">Вся Італія</option>
-                    <option value="Lombardia">Lombardia</option>
-                    <option value="Lazio">Lazio</option>
-                    <option value="Emilia-Romagna">Emilia-Romagna</option>
-                </select>
+        <!-- ЕКРАН 2: Верифікація -->
+        <div id="auth-page" class="page hidden space-y-6 text-center py-8">
+            <div class="bg-white p-6 border border-gray-100 rounded-2xl shadow-sm space-y-4">
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-xl">🔒</div>
+                <h2 id="text-auth-title" class="text-base font-bold text-gray-900">Швидкий вхід для перегляду</h2>
+                <p id="text-auth-desc" class="text-xs text-gray-500 leading-relaxed">
+                    Для захисту фахівців від спаму та ботів, будь ласка, підтвердіть, що ви реальний користувач.
+                </p>
 
-                <select id="category-filter" onchange="filterSpecialists()" class="w-1/2 bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
-                    <option value="">Усі категорії</option>
-                    <option value="auto">🚗 Авто</option>
-                    <option value="bureaucracy">📄 Документи</option>
-                    <option value="beauty">💅 Краса</option>
-                </select>
+                <div class="space-y-2 pt-2">
+                    <button onclick="verifyAndShowResults()" class="w-full bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-gray-50 transition shadow-sm">
+                        <span>Увійти через Google</span>
+                    </button>
+                    <button onclick="verifyAndShowResults()" class="w-full bg-blue-500 text-white font-medium py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-blue-600 transition shadow-sm">
+                        <span>Увійти через Telegram</span>
+                    </button>
+                </div>
+
+                <button onclick="showPage('welcome-page')" class="text-xs text-gray-400 underline pt-2 block mx-auto">← Повернутися до пошуку</button>
             </div>
         </div>
 
-        <!-- Стрічка карток фахівців -->
-        <div id="specialists-list" class="space-y-3">
-            <!-- Сюди динамічно завантажуються картки -->
+        <!-- ЕКРАН 3: Список результатів та Мапа -->
+        <div id="results-page" class="page hidden space-y-4">
+            <div class="flex justify-between items-center">
+                <button onclick="showPage('welcome-page')" class="text-xs text-blue-600 font-semibold">← Новий пошук</button>
+                <!-- Перемикач видів: Список / Мапа -->
+                <div class="flex bg-gray-200 rounded-xl p-1 text-xs">
+                    <button onclick="switchView('list')" id="view-list-btn" class="px-3 py-1 bg-white rounded-lg font-semibold shadow-sm">Список</button>
+                    <button onclick="switchView('map')" id="view-map-btn" class="px-3 py-1 text-gray-600">Мапа</button>
+                </div>
+            </div>
+
+            <!-- Контейнер для списку -->
+            <div id="list-view-container" class="space-y-3">
+                <div id="results-count" class="text-xs text-gray-400">Знайдено: 3</div>
+                <div id="specialists-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Контейнер для мапи (спочатку прихований) -->
+            <div id="map-view-container" class="hidden space-y-2">
+                <div id="map"></div>
+                <p class="text-[10px] text-gray-400 text-center">Натисніть на мітку, щоб переглянути деталі фахівця.</p>
+            </div>
         </div>
 
     </main>
 
-    <!-- Модальне вікно для реєстрації фахівця -->
+    <!-- Модальне вікно для анкет -->
     <div id="specialist-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-blue-900 text-base">Анкета фахівця</h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 font-bold text-sm">✕</button>
+                <h3 class="font-bold text-blue-900 text-sm">Анкета фахівця</h3>
+                <button onclick="closeModal()" class="text-gray-400 font-bold text-sm">✕</button>
             </div>
-            <p class="text-xs text-gray-500">Ваша заявка потрапить на модерацію та з'явиться в каталозі після перевірки.</p>
-            
-            <div class="space-y-3 text-xs">
-                <input type="text" id="spec-name" placeholder="Ім'я / Назва послуги" class="w-full border border-gray-200 rounded-xl px-3 py-2">
-                <input type="text" id="spec-cat" placeholder="Категорія (auto, bureaucracy, beauty)" class="w-full border border-gray-200 rounded-xl px-3 py-2">
-                <input type="text" id="spec-loc" placeholder="Регіон / Місто (напр. Lombardia, Мілан)" class="w-full border border-gray-200 rounded-xl px-3 py-2">
-                <input type="text" id="spec-link" placeholder="Посилання на портфоліо / Instagram" class="w-full border border-gray-200 rounded-xl px-3 py-2">
-                <button onclick="submitSpecialist()" class="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-700 transition">Надіслати на перевірку</button>
+            <p class="text-xs text-gray-500">Заявка буде опублікована після перевірки модератором.</p>
+
+            <div class="space-y-2.5 text-xs">
+                <input type="text" placeholder="Ім'я / Послуга" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+                <input type="text" placeholder="Категорія (auto, bureaucracy, beauty)" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+                <input type="text" placeholder="Регіон / Місто" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+                <input type="text" placeholder="Посилання на портфоліо / Instagram" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+                <button onclick="submitSpecialist()" class="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-700 transition">Надіслати</button>
             </div>
         </div>
     </div>
 
-    <!-- Скріпт логіки -->
+    <!-- СКРІПТ ЛОГІКИ -->
     <script>
-        // Демо-база фахівців (тестові картки)
+        let isAuthenticated = false;
+        let map = null;
+        let markers = [];
+
+        // Демо-база фахівців з координатами (широта, довгота для мапи)
         const specialists = [
-            { id: 1, name: "Андрій Автосервіс", category: "auto", region: "Lombardia", status: "Офлайн (Мілан)", desc: "Ремонт ходової, комп'ютерна діагностика, допомога на дорозі.", link: "https://instagram.com" },
-            { id: 2, name: "Олена | Документи & SPID", category: "bureaucracy", region: "Lazio", status: "Онлайн по всій Італії", desc: "Допомога з оформленням дозволів, записи до квестур, переклади.", link: "https://t.me" },
-            { id: 3, name: "Ірина Hair Studio", category: "beauty", region: "Emilia-Romagna", status: "Офлайн (Парма)", desc: "Сучасні стрижки, фарбування, догляд за волоссям.", link: "https://instagram.com" }
+            { id: 1, name: "Андрій Автосервіс", category: "auto", region: "Lombardia", status: "Офлайн (Мілан)", desc: "Ремонт ходової, комп'ютерна діагностика.", link: "https://instagram.com", lat: 45.4642, lng: 9.1900 },
+            { id: 2, name: "Олена | Документи & SPID", category: "bureaucracy", region: "Lazio", status: "Онлайн по всій Італії", desc: "Допомога з оформленням дозволів, записи до квестур.", link: "https://t.me", lat: 41.9028, lng: 12.4964 },
+            { id: 3, name: "Ірина Hair Studio", category: "beauty", region: "Emilia-Romagna", status: "Офлайн (Парма)", desc: "Сучасні стрижки, фарбування, догляд.", link: "https://instagram.com", lat: 44.8015, lng: 10.3279 }
         ];
 
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 500);
-            }, 800);
-            renderSpecialists(specialists);
-        });
-
-        function renderSpecialists(data) {
-            const listContainer = document.getElementById('specialists-list');
-            listContainer.innerHTML = '';
-
-            if (data.length === 0) {
-                listContainer.innerHTML = '<p class="text-center text-xs text-gray-400 py-6">Нічого не знайдено / Nessun risultato</p>';
-                return;
-            }
-
-            data.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow transition space-y-2";
-                card.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <h3 class="font-semibold text-sm text-gray-900">${item.name}</h3>
-                        <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium">${item.status}</span>
-                    </div>
-                    <p class="text-xs text-gray-600">${item.desc}</p>
-                    <div class="flex justify-between items-center pt-2 border-t border-gray-50 text-xs">
-                        <span class="text-gray-400">📍 ${item.region}</span>
-                        <a href="${item.link}" target="_blank" class="bg-blue-50 text-blue-600 font-semibold px-3 py-1.5 rounded-xl hover:bg-blue-100 transition">Портфоліо / Контакт ➔</a>
-                    </div>
-                `;
-                listContainer.appendChild(card);
-            });
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
         }
 
-        function filterSpecialists() {
+        function startSearch() {
+            if (isAuthenticated) {
+                renderResults();
+            } else {
+                showPage('auth-page');
+            }
+        }
+
+        function verifyAndShowResults() {
+            isAuthenticated = true;
+            renderResults();
+        }
+
+        function renderResults() {
             const searchVal = document.getElementById('search-input').value.toLowerCase();
             const regionVal = document.getElementById('region-filter').value;
             const categoryVal = document.getElementById('category-filter').value;
@@ -149,31 +189,116 @@
                 return matchesSearch && matchesRegion && matchesCategory;
             });
 
-            renderSpecialists(filtered);
+            // Рендер списку
+            const listContainer = document.getElementById('specialists-list');
+            listContainer.innerHTML = '';
+            document.getElementById('results-count').innerText = `Знайдено: ${filtered.length}`;
+
+            if (filtered.length === 0) {
+                listContainer.innerHTML = '<p class="text-center text-xs text-gray-400 py-6">Нічого не знайдено / Nessun risultato</p>';
+            } else {
+                filtered.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = "bg-white border border-gray-100 rounded-2xl p-4 shadow-sm space-y-2";
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-semibold text-sm text-gray-900">${item.name}</h3>
+                            <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium">${item.status}</span>
+                        </div>
+                        <p class="text-xs text-gray-600">${item.desc}</p>
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-50 text-xs">
+                            <span class="text-gray-400">📍 ${item.region}</span>
+                            <a href="${item.link}" target="_blank" class="bg-blue-50 text-blue-600 font-semibold px-3 py-1.5 rounded-xl hover:bg-blue-100 transition">Контакт ➔</a>
+                        </div>
+                    `;
+                    listContainer.appendChild(card);
+                });
+            }
+
+            // Зберігаємо відфільтровані для мапи
+            window.currentFiltered = filtered;
+            showPage('results-page');
+            switchView('list');
+        }
+
+        // Перемикач між списком і мапою
+        function switchView(view) {
+            const listContainer = document.getElementById('list-view-container');
+            const mapContainer = document.getElementById('map-view-container');
+            const listBtn = document.getElementById('view-list-btn');
+            const mapBtn = document.getElementById('view-map-btn');
+
+            if (view === 'list') {
+                listContainer.classList.remove('hidden');
+                mapContainer.classList.add('hidden');
+                listBtn.className = "px-3 py-1 bg-white rounded-lg font-semibold shadow-sm";
+                mapBtn.className = "px-3 py-1 text-gray-600";
+            } else {
+                listContainer.classList.add('hidden');
+                mapContainer.classList.remove('hidden');
+                mapBtn.className = "px-3 py-1 bg-white rounded-lg font-semibold shadow-sm";
+                listBtn.className = "px-3 py-1 text-gray-600";
+
+                // Ініціалізація мапи, якщо ще не створена
+                setTimeout(() => {
+                    initMap(window.currentFiltered || specialists);
+                }, 200);
+            }
+        }
+
+        // Ініціалізація OpenStreetMap через Leaflet
+        function initMap(data) {
+            if (!map) {
+                // Центр Італії за замовчуванням
+                map = L.map('map').setView([41.8719, 12.5674], 6);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            }
+
+            // Очищаємо попередні мітки
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            // Додаємо нові мітки на мапу
+            data.forEach(item => {
+                if (item.lat && item.lng) {
+                    const marker = L.marker([item.lat, item.lng]).addTo(map)
+                        .bindPopup(`<b>${item.name}</b><br>${item.status}<br><a href="${item.link}" target="_blank" style="color:blue;">Портфоліо ➔</a>`);
+                    markers.push(marker);
+                }
+            });
+
+            // Якщо є результати, налаштовуємо масштаб під них
+            if (data.length > 0 && data[0].lat) {
+                map.setView([data[0].lat, data[0].lng], 7);
+            }
         }
 
         function openModal() { document.getElementById('specialist-modal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('specialist-modal').classList.add('hidden'); }
-
         function submitSpecialist() {
-            alert("Дякуємо! Ваша заявка надіслана на ручну модерацію.");
+            alert("Дякуємо! Ваша заявка надіслана на модерацію.");
             closeModal();
         }
 
-        // Перемикач мов
+        // Переклад UA/IT
         const translations = {
-            uk: { bannerTitle: "Ти фахівець в Італії?", bannerSub: "Додай свої послуги до каталогу", joinBtn: "Долучитись", searchPlaceholder: "Пошук послуги або фахівця..." },
-            it: { bannerTitle: "Sei un professionista in Italia?", bannerSub: "Aggiungi i tuoi servizi al catalogo", joinBtn: "Unisciti", searchPlaceholder: "Cerca servizio o professionista..." }
+            uk: { welcomeTitle: "Вітаємо у UA Italia Servizio", welcomeSub: "Знайдіть перевірених українських фахівців по всій Італії.", bannerTitle: "Ти фахівець в Італії?", bannerSub: "Додай свої послуги до каталогу", joinBtn: "Долучитись", findBtn: "Шукати фахівців ➔" },
+            it: { welcomeTitle: "Benvenuti in UA Italia Servizio", welcomeSub: "Trova professionisti ucraini qualificati in tutta Italia.", bannerTitle: "Sei un professionista in Italia?", bannerSub: "Aggiungi i tuoi servizi al catalogo", joinBtn: "Unisciti", findBtn: "Cerca professionisti ➔" }
         };
 
         function switchLanguage(lang) {
             document.getElementById('btn-uk').className = lang === 'uk' ? 'text-xs px-2 py-1 rounded bg-blue-900 text-white font-medium' : 'text-xs px-2 py-1 rounded bg-gray-200 text-gray-700 font-medium';
             document.getElementById('btn-it').className = lang === 'it' ? 'text-xs px-2 py-1 rounded bg-blue-900 text-white font-medium' : 'text-xs px-2 py-1 rounded bg-gray-200 text-gray-700 font-medium';
 
+            document.getElementById('text-welcome-title').innerText = translations[lang].welcomeTitle;
+            document.getElementById('text-welcome-sub').innerText = translations[lang].welcomeSub;
             document.getElementById('text-banner-title').innerText = translations[lang].bannerTitle;
             document.getElementById('text-banner-sub').innerText = translations[lang].bannerSub;
             document.getElementById('btn-join').innerText = translations[lang].joinBtn;
-            document.getElementById('search-input').placeholder = translations[lang].searchPlaceholder;
+            document.getElementById('btn-find').innerText = translations[lang].findBtn;
         }
     </script>
 </body>
