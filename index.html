@@ -55,21 +55,43 @@
             <div class="bg-white p-4 border border-gray-100 rounded-2xl shadow-sm space-y-3">
                 <h2 id="text-search-heading" class="text-xs font-bold text-gray-700 uppercase tracking-wider">Пошук фахівця</h2>
                 
-                <input type="text" id="search-input" placeholder="Що ви шукаєте? (напр. авто, манікюр)..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
+                <input type="text" id="search-input" placeholder="Що ви шукаєте? (напр. авто, документи)..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
 
                 <div class="space-y-2">
+                    <!-- Повний список регіонів Італії -->
                     <select id="region-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none">
                         <option value="">Всі регіони Італії / Tutta Italia</option>
-                        <option value="Lombardia">Lombardia (Мілан)</option>
-                        <option value="Lazio">Lazio (Рим)</option>
-                        <option value="Emilia-Romagna">Emilia-Romagna (Болонья, Парма)</option>
+                        <option value="Abruzzo">Abruzzo</option>
+                        <option value="Basilicata">Basilicata</option>
+                        <option value="Calabria">Calabria</option>
+                        <option value="Campania">Campania</option>
+                        <option value="Emilia-Romagna">Emilia-Romagna</option>
+                        <option value="Friuli-Venezia Giulia">Friuli-Venezia Giulia</option>
+                        <option value="Lazio">Lazio</option>
+                        <option value="Liguria">Liguria</option>
+                        <option value="Lombardia">Lombardia</option>
+                        <option value="Marche">Marche</option>
+                        <option value="Molise">Molise</option>
+                        <option value="Piemonte">Piemonte</option>
+                        <option value="Puglia">Puglia</option>
+                        <option value="Sardegna">Sardegna</option>
+                        <option value="Sicilia">Sicilia</option>
+                        <option value="Toscana">Toscana</option>
+                        <option value="Trentino-Alto Adige">Trentino-Alto Adige</option>
+                        <option value="Umbria">Umbria</option>
+                        <option value="Valle d'Aosta">Valle d'Aosta</option>
+                        <option value="Veneto">Veneto</option>
                     </select>
 
+                    <!-- Розширені категорії -->
                     <select id="category-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none">
                         <option value="">Усі категорії / Tutte le categorie</option>
                         <option value="auto">🚗 Автомобільні послуги</option>
                         <option value="bureaucracy">📄 Документи та легалізація</option>
                         <option value="beauty">💅 Краса та здоров'я</option>
+                        <option value="realestate">🏠 Нерухомість та побут</option>
+                        <option value="transport">📦 Транспорт і посилки</option>
+                        <option value="other">🏨 Інше (готелі, освіта тощо)</option>
                     </select>
                 </div>
 
@@ -105,7 +127,6 @@
         <div id="results-page" class="page hidden space-y-4">
             <div class="flex justify-between items-center">
                 <button onclick="showPage('welcome-page')" class="text-xs text-blue-600 font-semibold">← Новий пошук</button>
-                <!-- Перемикач видів: Список / Мапа -->
                 <div class="flex bg-gray-200 rounded-xl p-1 text-xs">
                     <button onclick="switchView('list')" id="view-list-btn" class="px-3 py-1 bg-white rounded-lg font-semibold shadow-sm">Список</button>
                     <button onclick="switchView('map')" id="view-map-btn" class="px-3 py-1 text-gray-600">Мапа</button>
@@ -127,7 +148,7 @@
 
     </main>
 
-    <!-- Модальне вікно для анкет із випадаючими списками -->
+    <!-- Модальне вікно для анкет із рядком адреси -->
     <div id="specialist-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl">
             <div class="flex justify-between items-center">
@@ -139,21 +160,44 @@
             <div class="space-y-2.5 text-xs">
                 <input type="text" id="modal-name" placeholder="Ім'я / Назва послуги" class="w-full border border-gray-200 rounded-xl px-3 py-2">
                 
-                <!-- Випадаючий список категорій -->
+                <!-- Категорія -->
                 <select id="modal-category" class="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white">
                     <option value="">Оберіть категорію</option>
                     <option value="auto">🚗 Автомобільні послуги</option>
                     <option value="bureaucracy">📄 Документи та легалізація</option>
                     <option value="beauty">💅 Краса та здоров'я</option>
+                    <option value="realestate">🏠 Нерухомість та побут</option>
+                    <option value="transport">📦 Транспорт і посилки</option>
+                    <option value="other">🏨 Інше</option>
                 </select>
 
-                <!-- Випадаючий список регіонів -->
+                <!-- Регіон -->
                 <select id="modal-region" class="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white">
                     <option value="">Оберіть регіон</option>
-                    <option value="Lombardia">Lombardia</option>
-                    <option value="Lazio">Lazio</option>
+                    <option value="Abruzzo">Abruzzo</option>
+                    <option value="Basilicata">Basilicata</option>
+                    <option value="Calabria">Calabria</option>
+                    <option value="Campania">Campania</option>
                     <option value="Emilia-Romagna">Emilia-Romagna</option>
+                    <option value="Friuli-Venezia Giulia">Friuli-Venezia Giulia</option>
+                    <option value="Lazio">Lazio</option>
+                    <option value="Liguria">Liguria</option>
+                    <option value="Lombardia">Lombardia</option>
+                    <option value="Marche">Marche</option>
+                    <option value="Molise">Molise</option>
+                    <option value="Piemonte">Piemonte</option>
+                    <option value="Puglia">Puglia</option>
+                    <option value="Sardegna">Sardegna</option>
+                    <option value="Sicilia">Sicilia</option>
+                    <option value="Toscana">Toscana</option>
+                    <option value="Trentino-Alto Adige">Trentino-Alto Adige</option>
+                    <option value="Umbria">Umbria</option>
+                    <option value="Valle d'Aosta">Valle d'Aosta</option>
+                    <option value="Veneto">Veneto</option>
                 </select>
+
+                <!-- Рядок для точної адреси -->
+                <input type="text" id="modal-address" placeholder="Точна адреса або місто (напр. Via Roma 10, Milano)" class="w-full border border-gray-200 rounded-xl px-3 py-2">
 
                 <input type="text" id="modal-link" placeholder="Посилання на портфоліо / Instagram / Telegram" class="w-full border border-gray-200 rounded-xl px-3 py-2">
                 <button onclick="submitSpecialist()" class="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-700 transition">Надіслати на перевірку</button>
@@ -168,9 +212,9 @@
         let markers = [];
 
         const specialists = [
-            { id: 1, name: "Андрій Автосервіс", category: "auto", region: "Lombardia", status: "Офлайн (Мілан)", desc: "Ремонт ходової, комп'ютерна діагностика.", link: "https://instagram.com", lat: 45.4642, lng: 9.1900 },
-            { id: 2, name: "Олена | Документи & SPID", category: "bureaucracy", region: "Lazio", status: "Онлайн по всій Італії", desc: "Допомога з оформленням дозволів, записи до квестур.", link: "https://t.me", lat: 41.9028, lng: 12.4964 },
-            { id: 3, name: "Ірина Hair Studio", category: "beauty", region: "Emilia-Romagna", status: "Офлайн (Парма)", desc: "Сучасні стрижки, фарбування, догляд.", link: "https://instagram.com", lat: 44.8015, lng: 10.3279 }
+            { id: 1, name: "Андрій Автосервіс", category: "auto", region: "Lombardia", address: "Via Padova 15, Milano", status: "Офлайн", desc: "Ремонт ходової, комп'ютерна діагностика.", link: "https://instagram.com", lat: 45.4642, lng: 9.1900 },
+            { id: 2, name: "Олена | Документи & SPID", category: "bureaucracy", region: "Lazio", address: "Online / Roma", status: "Онлайн", desc: "Допомога з оформленням дозволів, записи до квестур.", link: "https://t.me", lat: 41.9028, lng: 12.4964 },
+            { id: 3, name: "Ірина Hair Studio", category: "beauty", region: "Emilia-Romagna", address: "Via Emilia 22, Parma", status: "Офлайн", desc: "Сучасні стрижки, фарбування, догляд.", link: "https://instagram.com", lat: 44.8015, lng: 10.3279 }
         ];
 
         function showPage(pageId) {
@@ -197,7 +241,7 @@
             const categoryVal = document.getElementById('category-filter').value;
 
             const filtered = specialists.filter(item => {
-                const matchesSearch = item.name.toLowerCase().includes(searchVal) || item.desc.toLowerCase().includes(searchVal);
+                const matchesSearch = item.name.toLowerCase().includes(searchVal) || item.desc.toLowerCase().includes(searchVal) || item.address.toLowerCase().includes(searchVal);
                 const matchesRegion = regionVal === "" || item.region === regionVal;
                 const matchesCategory = categoryVal === "" || item.category === categoryVal;
                 return matchesSearch && matchesRegion && matchesCategory;
@@ -219,8 +263,8 @@
                             <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium">${item.status}</span>
                         </div>
                         <p class="text-xs text-gray-600">${item.desc}</p>
-                        <div class="flex justify-between items-center pt-2 border-t border-gray-50 text-xs">
-                            <span class="text-gray-400">📍 ${item.region}</span>
+                        <div class="text-[11px] text-gray-500">📍 ${item.region}, ${item.address}</div>
+                        <div class="flex justify-end pt-2 border-t border-gray-50 text-xs">
                             <a href="${item.link}" target="_blank" class="bg-blue-50 text-blue-600 font-semibold px-3 py-1.5 rounded-xl hover:bg-blue-100 transition">Контакт ➔</a>
                         </div>
                     `;
@@ -271,7 +315,7 @@
             data.forEach(item => {
                 if (item.lat && item.lng) {
                     const marker = L.marker([item.lat, item.lng]).addTo(map)
-                        .bindPopup(`<b>${item.name}</b><br>${item.status}<br><a href="${item.link}" target="_blank" style="color:blue;">Портфоліо ➔</a>`);
+                        .bindPopup(`<b>${item.name}</b><br>${item.address}<br><a href="${item.link}" target="_blank" style="color:blue;">Портфоліо ➔</a>`);
                     markers.push(marker);
                 }
             });
@@ -288,9 +332,10 @@
             const name = document.getElementById('modal-name').value;
             const category = document.getElementById('modal-category').value;
             const region = document.getElementById('modal-region').value;
+            const address = document.getElementById('modal-address').value;
             
-            if(!name || !category || !region) {
-                alert("Будь ласка, заповніть обов'язкові поля!");
+            if(!name || !category || !region || !address) {
+                alert("Будь ласка, заповніть усі поля!");
                 return;
             }
 
