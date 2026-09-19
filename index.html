@@ -58,7 +58,7 @@
                 <input type="text" id="search-input" placeholder="Що ви шукаєте? (напр. авто, документи)..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
 
                 <div class="space-y-2">
-                    <!-- Повний список регіонів Італії -->
+                    <!-- Регіони -->
                     <select id="region-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none">
                         <option value="">Всі регіони Італії / Tutta Italia</option>
                         <option value="Abruzzo">Abruzzo</option>
@@ -83,7 +83,7 @@
                         <option value="Veneto">Veneto</option>
                     </select>
 
-                    <!-- Розширені категорії -->
+                    <!-- Категорії -->
                     <select id="category-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none">
                         <option value="">Усі категорії / Tutte le categorie</option>
                         <option value="auto">🚗 Автомобільні послуги</option>
@@ -93,6 +93,13 @@
                         <option value="transport">📦 Транспорт і посилки</option>
                         <option value="other">🏨 Інше (готелі, освіта тощо)</option>
                     </select>
+
+                    <!-- Формат (Офлайн / Онлайн) -->
+                    <select id="format-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none">
+                        <option value="">Будь-який формат (Офлайн / Онлайн)</option>
+                        <option value="offline">📍 Фізично на місці (Офлайн)</option>
+                        <option value="online">🌐 Тільки Онлайн по всій Італії</option>
+                    </select>
                 </div>
 
                 <button onclick="startSearch()" id="btn-find" class="w-full bg-blue-900 text-white font-semibold py-3 rounded-xl text-xs hover:bg-blue-800 transition shadow">
@@ -101,7 +108,7 @@
             </div>
         </div>
 
-        <!-- ЕКРАН 2: Верифікація -->
+        <!-- ЕКРАН 2: Верифікація з процесом завантаження -->
         <div id="auth-page" class="page hidden space-y-6 text-center py-8">
             <div class="bg-white p-6 border border-gray-100 rounded-2xl shadow-sm space-y-4">
                 <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-xl">🔒</div>
@@ -110,13 +117,20 @@
                     Для захисту фахівців від спаму та ботів, будь ласка, підтвердіть, що ви реальний користувач.
                 </p>
 
-                <div class="space-y-2 pt-2">
+                <!-- Блок кнопок або статус процесу верифікації -->
+                <div id="auth-buttons-container" class="space-y-2 pt-2">
                     <button onclick="verifyAndShowResults('Google')" class="w-full bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-gray-50 transition shadow-sm">
                         <span>Увійти через Google</span>
                     </button>
                     <button onclick="verifyAndShowResults('Telegram')" class="w-full bg-blue-500 text-white font-medium py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-blue-600 transition shadow-sm">
                         <span>Увійти через Telegram</span>
                     </button>
+                </div>
+
+                <!-- Індикатор процесу верифікації (спочатку прихований) -->
+                <div id="auth-loader" class="hidden py-4 space-y-2">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900 mx-auto"></div>
+                    <p class="text-xs text-blue-900 font-medium">Перевірка акаунта та авторизація...</p>
                 </div>
 
                 <button onclick="showPage('welcome-page')" class="text-xs text-gray-400 underline pt-2 block mx-auto">← Повернутися до пошуку</button>
@@ -148,7 +162,7 @@
 
     </main>
 
-    <!-- Модальне вікно для анкет -->
+    <!-- Модальне вікно для анкет із вибором формату (Онлайн / Офлайн) -->
     <div id="specialist-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl">
             <div class="flex justify-between items-center">
@@ -194,6 +208,13 @@
                     <option value="Veneto">Veneto</option>
                 </select>
 
+                <!-- Вибір формату послуги: Офлайн чи Онлайн -->
+                <select id="modal-format" class="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white">
+                    <option value="">Формат надання послуги</option>
+                    <option value="offline">📍 Фізично на місці (Офлайн)</option>
+                    <option value="online">🌐 Працює онлайн по всій Італії</option>
+                </select>
+
                 <input type="text" id="modal-address" placeholder="Точна адреса або місто (напр. Via Roma 10, Milano)" class="w-full border border-gray-200 rounded-xl px-3 py-2">
                 <input type="text" id="modal-link" placeholder="Посилання на портфоліо / Instagram / Telegram" class="w-full border border-gray-200 rounded-xl px-3 py-2">
                 <button onclick="submitSpecialist()" class="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-700 transition">Надіслати на перевірку</button>
@@ -203,14 +224,14 @@
 
     <!-- СКРІПТ ЛОГІКИ -->
     <script>
-        let isAuthenticated = false; // Статус верифікації за замовчуванням: не пройдено
+        let isAuthenticated = false; // Статус верифікації
         let map = null;
         let markers = [];
 
         const specialists = [
-            { id: 1, name: "Андрій Автосервіс", category: "auto", region: "Lombardia", address: "Via Padova 15, Milano", status: "Офлайн", desc: "Ремонт ходової, комп'ютерна діагностика.", link: "https://instagram.com", lat: 45.4642, lng: 9.1900 },
-            { id: 2, name: "Олена | Документи & SPID", category: "bureaucracy", region: "Lazio", address: "Online / Roma", status: "Онлайн", desc: "Допомога з оформленням дозволів, записи до квестур.", link: "https://t.me", lat: 41.9028, lng: 12.4964 },
-            { id: 3, name: "Ірина Hair Studio", category: "beauty", region: "Emilia-Romagna", address: "Via Emilia 22, Parma", status: "Офлайн", desc: "Сучасні стрижки, фарбування, догляд.", link: "https://instagram.com", lat: 44.8015, lng: 10.3279 }
+            { id: 1, name: "Андрій Автосервіс", category: "auto", region: "Lombardia", format: "offline", address: "Via Padova 15, Milano", statusText: "Офлайн", desc: "Ремонт ходової, комп'ютерна діагностика.", link: "https://instagram.com", lat: 45.4642, lng: 9.1900 },
+            { id: 2, name: "Олена | Документи & SPID", category: "bureaucracy", region: "Lazio", format: "online", address: "Online / Roma", statusText: "Онлайн", desc: "Допомога з оформленням дозволів, записи до квестур.", link: "https://t.me", lat: 41.9028, lng: 12.4964 },
+            { id: 3, name: "Ірина Hair Studio", category: "beauty", region: "Emilia-Romagna", format: "offline", address: "Via Emilia 22, Parma", statusText: "Офлайн", desc: "Сучасні стрижки, фарбування, догляд.", link: "https://instagram.com", lat: 44.8015, lng: 10.3279 }
         ];
 
         function showPage(pageId) {
@@ -218,31 +239,40 @@
             document.getElementById(pageId).classList.remove('hidden');
         }
 
-        // Жорстка перевірка перед пошуком
         function startSearch() {
             if (!isAuthenticated) {
-                showPage('auth-page'); // Якщо не верифікований — кидаємо на екран входу
+                // Скидаємо видимість елементів на екрані авторизації перед показом
+                document.getElementById('auth-buttons-container').classList.remove('hidden');
+                document.getElementById('auth-loader').classList.add('hidden');
+                showPage('auth-page');
             } else {
-                renderResults();     // Якщо вже входив — показуємо результати
+                renderResults();
             }
         }
 
-        // Викликається після успішного кліку на Google/Telegram
+        // Симуляція реального процесу верифікації з лоадером
         function verifyAndShowResults(provider) {
-            isAuthenticated = true; // Фіксуємо, що користувач пройшов верифікацію
-            renderResults();         // Показуємо результати
+            document.getElementById('auth-buttons-container').classList.add('hidden');
+            document.getElementById('auth-loader').classList.remove('hidden');
+
+            setTimeout(() => {
+                isAuthenticated = true; // Верифікацію пройдено успішно
+                renderResults();
+            }, 1200); // 1.2 секунди імітації входу
         }
 
         function renderResults() {
             const searchVal = document.getElementById('search-input').value.toLowerCase();
             const regionVal = document.getElementById('region-filter').value;
             const categoryVal = document.getElementById('category-filter').value;
+            const formatVal = document.getElementById('format-filter').value;
 
             const filtered = specialists.filter(item => {
                 const matchesSearch = item.name.toLowerCase().includes(searchVal) || item.desc.toLowerCase().includes(searchVal) || item.address.toLowerCase().includes(searchVal);
                 const matchesRegion = regionVal === "" || item.region === regionVal;
                 const matchesCategory = categoryVal === "" || item.category === categoryVal;
-                return matchesSearch && matchesRegion && matchesCategory;
+                const matchesFormat = formatVal === "" || item.format === formatVal;
+                return matchesSearch && matchesRegion && matchesCategory && matchesFormat;
             });
 
             const listContainer = document.getElementById('specialists-list');
@@ -258,7 +288,7 @@
                     card.innerHTML = `
                         <div class="flex justify-between items-start">
                             <h3 class="font-semibold text-sm text-gray-900">${item.name}</h3>
-                            <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium">${item.status}</span>
+                            <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium">${item.statusText}</span>
                         </div>
                         <p class="text-xs text-gray-600">${item.desc}</p>
                         <div class="text-[11px] text-gray-500">📍 ${item.region}, ${item.address}</div>
@@ -330,9 +360,10 @@
             const name = document.getElementById('modal-name').value;
             const category = document.getElementById('modal-category').value;
             const region = document.getElementById('modal-region').value;
+            const format = document.getElementById('modal-format').value;
             const address = document.getElementById('modal-address').value;
             
-            if(!name || !category || !region || !address) {
+            if(!name || !category || !region || !format || !address) {
                 alert("Будь ласка, заповніть усі поля!");
                 return;
             }
