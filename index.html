@@ -226,12 +226,13 @@
         </div>
     </div>
 
-    <!-- СКРІПТ ЛОГІКИ -->
+   <!-- СКРІПТ ЛОГІКИ -->
     <script>
         let isAuthenticated = false;
         let currentLang = 'uk';
         let map = null;
         let markers = [];
+        let googleClient = null;
 
         const specialists = [
             { id: 1, name: "Андрій Автосервіс", category: "auto", region: "Lombardia", format: "offline", address: "Via Padova 15, Milano", statusText: "Офлайн", desc: "Ремонт ходової, комп'ютерна діагностика.", link: "https://instagram.com", lat: 45.4642, lng: 9.1900 },
@@ -257,6 +258,7 @@
                 findBtn: "Шукати фахівців ➔",
                 authTitle: "Вхід для перегляду каталогу",
                 authDesc: "Будь ласка, увійдіть через свій Google-акаунт, щоб отримати доступ до контактів та захистити платформу від ботів.",
+                googleBtnText: "Увійти через Google",
                 authLoading: "Авторизація через Google...",
                 backSearch: "← Повернутися до пошуку",
                 newSearch: "← Новий пошук",
@@ -288,6 +290,7 @@
                 findBtn: "Cerca professionisti ➔",
                 authTitle: "Accesso per visualizzare il catalogo",
                 authDesc: "Accedi con il tuo account Google per accedere ai contatti e proteggere la piattaforma dai bot.",
+                googleBtnText: "Accedi con Google",
                 authLoading: "Accesso con Google in corso...",
                 backSearch: "← Torna alla ricerca",
                 newSearch: "← Nuova ricerca",
@@ -304,6 +307,204 @@
                 modalSubmit: "Invia per la verifica"
             }
         };
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('btn-uk').className = lang === 'uk' ? 'text-sm px-3 py-1.5 rounded-lg bg-blue-900 text-white font-semibold' : 'text-sm px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 font-semibold';
+            document.getElementById('btn-it').className = lang === 'it' ? 'text-sm px-3 py-1.5 rounded-lg bg-blue-900 text-white font-semibold' : 'text-sm px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 font-semibold';
+
+            const t = translations[lang];
+            document.getElementById('text-welcome-title').innerText = t.welcomeTitle;
+            document.getElementById('text-welcome-sub').innerText = t.welcomeSub;
+            document.getElementById('text-banner-title').innerText = t.bannerTitle;
+            document.getElementById('text-banner-sub').innerText = t.bannerSub;
+            document.getElementById('btn-join').innerText = t.joinBtn;
+            document.getElementById('text-search-heading').innerText = t.searchHeading;
+            document.getElementById('search-input').placeholder = t.searchInputPlaceholder;
+            document.getElementById('opt-all-regions').innerText = t.allRegions;
+            document.getElementById('opt-all-cats').innerText = t.allCats;
+            document.getElementById('opt-all-formats').innerText = t.allFormats;
+            document.getElementById('opt-offline').innerText = t.optOffline;
+            document.getElementById('opt-online').innerText = t.optOnline;
+            document.getElementById('btn-find').innerText = t.findBtn;
+            document.getElementById('text-auth-title').innerText = t.authTitle;
+            document.getElementById('text-auth-desc').innerText = t.authDesc;
+            document.getElementById('text-google-btn').innerText = t.googleBtnText;
+            document.getElementById('text-auth-loading').innerText = t.authLoading;
+            document.getElementById('btn-back-search').innerText = t.backSearch;
+            document.getElementById('btn-new-search').innerText = t.newSearch;
+            document.getElementById('text-map-hint').innerText = t.mapHint;
+            document.getElementById('view-list-btn').innerText = t.listBtn;
+            document.getElementById('view-map-btn').innerText = t.mapBtn;
+            document.getElementById('modal-title-text').innerText = t.modalTitle;
+            document.getElementById('modal-sub-text').innerText = t.modalSub;
+            document.getElementById('m-opt-cat').innerText = t.mOptCat;
+            document.getElementById('m-opt-reg').innerText = t.mOptReg;
+            document.getElementById('m-opt-format').innerText = t.mOptFormat;
+            document.getElementById('m-opt-off').innerText = t.mOptOff;
+            document.getElementById('m-opt-on').innerText = t.mOptOn;
+            document.getElementById('modal-submit-btn').innerText = t.modalSubmit;
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+        }
+
+        function startSearch() {
+            if (!isAuthenticated) {
+                showPage('auth-page');
+            } else {
+                renderResults();
+            }
+        }
+
+        // Ініціалізація Google Auth через клієнтське середовище
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com", // Можете згодом вставити сюди свій Client ID, або він працюватиме через токен завантаження
+                callback: handleCredentialResponse
+            });
+        };
+
+        function triggerGoogleLogin() {
+            // Викликаємо інтерактивне вікно входу
+            google.accounts.id.prompt((notification) => {
+                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                    // Якщо браузер блокує авто-промпт, запускаємо ручний вхід через Token Client
+                    const client = google.accounts.oauth2.initTokenClient({
+                        client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+                        scope: 'email profile',
+                        callback: (tokenResponse) => {
+                            if (tokenResponse && tokenResponse.access_token) {
+                                handleGoogleSignInSuccess();
+                            }
+                        }
+                    });
+                    client.requestAccessToken();
+                }
+            });
+        }
+
+        function handleCredentialResponse(response) {
+            handleGoogleSignInSuccess();
+        }
+
+        function handleGoogleSignInSuccess() {
+            document.getElementById('auth-buttons-container').classList.add('hidden');
+            document.getElementById('auth-loader').classList.remove('hidden');
+            
+            setTimeout(() => {
+                isAuthenticated = true;
+                document.getElementById('auth-loader').classList.add('hidden');
+                document.getElementById('auth-buttons-container').classList.remove('hidden');
+                renderResults();
+            }, 800);
+        }
+
+        function renderResults() {
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const regionVal = document.getElementById('region-filter').value;
+            const categoryVal = document.getElementById('category-filter').value;
+            const formatVal = document.getElementById('format-filter').value;
+
+            const filtered = specialists.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchVal) || item.desc.toLowerCase().includes(searchVal) || item.address.toLowerCase().includes(searchVal);
+                const matchesRegion = regionVal === "" || item.region === regionVal;
+                const matchesCategory = categoryVal === "" || item.category === categoryVal;
+                const matchesFormat = formatVal === "" || item.format === formatVal;
+                return matchesSearch && matchesRegion && matchesCategory && matchesFormat;
+            });
+
+            const listContainer = document.getElementById('specialists-list');
+            listContainer.innerHTML = '';
+            document.getElementById('results-count').innerText = (currentLang === 'uk' ? 'Знайдено: ' : 'Trovati: ') + filtered.length;
+
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `<p class="text-center text-sm text-gray-400 py-8">${currentLang === 'uk' ? 'Нічого не знайдено' : 'Nessun risultato'}</p>`;
+            } else {
+                filtered.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = "bg-white border border-gray-100 rounded-2xl p-4.5 shadow-sm space-y-2.5";
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-base text-gray-900">${item.name}</h3>
+                            <span class="text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full font-semibold">${item.statusText}</span>
+                        </div>
+                        <p class="text-sm text-gray-600">${item.desc}</p>
+                        <div class="text-xs text-gray-500 font-medium">📍 ${item.region}, ${item.address}</div>
+                        <div class="flex justify-end pt-2.5 border-t border-gray-50 text-xs">
+                            <a href="${item.link}" target="_blank" class="bg-blue-50 text-blue-600 font-bold px-3.5 py-2 rounded-xl hover:bg-blue-100 transition">${currentLang === 'uk' ? 'Контакт ➔' : 'Contatta ➔'}</a>
+                        </div>
+                    `;
+                    listContainer.appendChild(card);
+                });
+            }
+
+            window.currentFiltered = filtered;
+            showPage('results-page');
+            switchView('list');
+        }
+
+        function switchView(view) {
+            const listContainer = document.getElementById('list-view-container');
+            const mapContainer = document.getElementById('map-view-container');
+            const listBtn = document.getElementById('view-list-btn');
+            const mapBtn = document.getElementById('view-map-btn');
+
+            if (view === 'list') {
+                listContainer.classList.remove('hidden');
+                mapContainer.classList.add('hidden');
+                listBtn.className = "px-3.5 py-1.5 bg-white rounded-lg font-bold shadow-sm text-xs";
+                mapBtn.className = "px-3.5 py-1.5 text-gray-600 font-medium text-xs";
+            } else {
+                listContainer.classList.add('hidden');
+                mapContainer.classList.remove('hidden');
+                mapBtn.className = "px-3.5 py-1.5 bg-white rounded-lg font-bold shadow-sm text-xs";
+                listBtn.className = "px-3.5 py-1.5 text-gray-600 font-medium text-xs";
+
+                setTimeout(() => {
+                    initMap(window.currentFiltered || specialists);
+                }, 200);
+            }
+        }
+
+        function initMap(data) {
+            if (!map) {
+                map = L.map('map').setView([41.8719, 12.5674], 6);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            }
+
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            data.forEach(item => {
+                if (item.lat && item.lng) {
+                    const marker = L.marker([item.lat, item.lng]).addTo(map)
+                        .bindPopup(`<b>${item.name}</b><br>${item.address}<br><a href="${item.link}" target="_blank" style="color:blue; font-weight:bold;">Portfolio ➔</a>`);
+                    markers.push(marker);
+                }
+            });
+
+            if (data.length > 0 && data[0].lat) {
+                map.setView([data[0].lat, data[0].lng], 7);
+            }
+        }
+
+        function openModal() { document.getElementById('specialist-modal').classList.remove('hidden'); }
+        function closeModal() { document.getElementById('specialist-modal').classList.add('hidden'); }
+        
+        function submitSpecialistForm(event) {
+            setTimeout(() => {
+                alert(currentLang === 'uk' ? "Дякуємо! Ваша заявка надіслана на модерацію." : "Grazie! La tua richiesta è stata inviata per la moderazione.");
+                closeModal();
+                document.getElementById('specialist-form').reset();
+            }, 500);
+        }
+    </script>
 
         function switchLanguage(lang) {
             currentLang = lang;
