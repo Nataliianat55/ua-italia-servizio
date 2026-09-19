@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <!-- Google Identity Services SDK -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -108,29 +106,19 @@
             </div>
         </div>
 
-        <!-- ЕКРАН 2: Верифікація через Google -->
+        <!-- ЕКРАН 2: Верифікація через Telegram -->
         <div id="auth-page" class="page hidden space-y-6 text-center py-6">
             <div class="bg-white p-6 border border-gray-100 rounded-2xl shadow-sm space-y-5">
-                <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-2xl">🔒</div>
+                <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-2xl">🛡️</div>
                 <h2 id="text-auth-title" class="text-lg font-bold text-gray-900">Вхід для перегляду каталогу</h2>
                 <p id="text-auth-desc" class="text-sm text-gray-600 leading-relaxed">
-                    Будь ласка, увійдіть через свій Google-акаунт, щоб отримати доступ до контактів та захистити платформу від ботів.
+                    Підтвердіть вхід через Telegram, щоб отримати доступ до контактів фахівців та захистити спільноту від ботів.
                 </p>
 
-                <!-- Кнопка реального входу через Google -->
-                <div id="auth-buttons-container" class="pt-2 flex justify-center">
-                    <button onclick="triggerGoogleLogin()" class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-3.5 px-4 rounded-xl text-sm flex items-center justify-center gap-3 hover:bg-gray-50 transition shadow-sm">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.14C3.19 21.35 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.62H1.19C.43 8.15 0 9.89 0 11.76s.43 3.61 1.19 5.14l4.08-2.66z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.19 2.65 1.19 6.62l4.08 3.14c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
-                        <span id="text-google-btn">Увійти через Google</span>
-                    </button>
-                </div>
+                <!-- Контейнер для офіційного віджета Telegram Login -->
+                <div id="telegram-login-container" class="pt-2 flex justify-center"></div>
 
-                <div id="auth-loader" class="hidden py-3 space-y-2">
-                    <div class="animate-spin rounded-full h-7 w-7 border-b-2 border-blue-900 mx-auto"></div>
-                    <p id="text-auth-loading" class="text-sm text-blue-900 font-medium">Авторизація через Google...</p>
-                </div>
-
-                <button onclick="showPage('welcome-page')" id="btn-back-search" class="text-sm text-gray-500 underline pt-2 block mx-auto">← Повернутися до пошуку</button>
+                <button onclick="showPage('welcome-page')" id="btn-back-search" class="text-sm text-gray-500 underline pt-3 block mx-auto">← Повернутися до пошуку</button>
             </div>
         </div>
 
@@ -247,9 +235,7 @@
                 optOnline: "🌐 Тільки Онлайн по всій Італії",
                 findBtn: "Шукати фахівців ➔",
                 authTitle: "Вхід для перегляду каталогу",
-                authDesc: "Будь ласка, увійдіть через свій Google-акаунт, щоб отримати доступ до контактів та захистити платформу від ботів.",
-                googleBtnText: "Увійти через Google",
-                authLoading: "Авторизація через Google...",
+                authDesc: "Підтвердіть вхід через Telegram, щоб отримати доступ до контактів фахівців та захистити спільноту від ботів.",
                 backSearch: "← Повернутися до пошуку",
                 newSearch: "← Новий пошук",
                 mapHint: "Натисніть на мітку, щоб переглянути деталі фахівця.",
@@ -279,9 +265,7 @@
                 optOnline: "🌐 Solo Online in tutta Italia",
                 findBtn: "Cerca professionisti ➔",
                 authTitle: "Accesso per visualizzare il catalogo",
-                authDesc: "Accedi con il tuo account Google per accedere ai contatti e proteggere la piattaforma dai bot.",
-                googleBtnText: "Accedi con Google",
-                authLoading: "Accesso con Google in corso...",
+                authDesc: "Conferma l'accesso tramite Telegram per accedere ai contatti e proteggere la community dai bot.",
                 backSearch: "← Torna alla ricerca",
                 newSearch: "← Nuova ricerca",
                 mapHint: "Clicca su un indicatore per vedere i dettagli.",
@@ -319,8 +303,6 @@
             document.getElementById('btn-find').innerText = t.findBtn;
             document.getElementById('text-auth-title').innerText = t.authTitle;
             document.getElementById('text-auth-desc').innerText = t.authDesc;
-            document.getElementById('text-google-btn').innerText = t.googleBtnText;
-            document.getElementById('text-auth-loading').innerText = t.authLoading;
             document.getElementById('btn-back-search').innerText = t.backSearch;
             document.getElementById('btn-new-search').innerText = t.newSearch;
             document.getElementById('text-map-hint').innerText = t.mapHint;
@@ -344,23 +326,35 @@
         function startSearch() {
             if (!isAuthenticated) {
                 showPage('auth-page');
+                renderTelegramWidget();
             } else {
                 renderResults();
             }
         }
 
-        // Кнопка входу через Google із вбудованою симуляцією підтвердження токена безпеки
-        function triggerGoogleLogin() {
-            document.getElementById('auth-buttons-container').classList.add('hidden');
-            document.getElementById('auth-loader').classList.remove('hidden');
-            
-            // Тут імітуємо запит на підтвердження акаунта Google (або в майбутньому повноцінний OAuth callback)
-            setTimeout(() => {
-                isAuthenticated = true;
-                document.getElementById('auth-loader').classList.add('hidden');
-                document.getElementById('auth-buttons-container').classList.remove('hidden');
-                renderResults();
-            }, 1000);
+        // Рендеринг офіційного віджета Telegram Login
+        function renderTelegramWidget() {
+            const container = document.getElementById('telegram-login-container');
+            // Очищуємо контейнер на випадок повторного відкриття
+            container.innerHTML = '';
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = "https://telegram.org/js/telegram-widget.js?22";
+            script.setAttribute('data-telegram-login', 'Taschajv_bot');
+            script.setAttribute('data-size', 'large');
+            script.setAttribute('data-radius', '12');
+            script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+            script.setAttribute('data-request-access', 'write');
+
+            container.appendChild(script);
+        }
+
+        // Функція, яку викликає Telegram після успішного входу користувача
+        function onTelegramAuth(user) {
+            console.log('Успішна авторизація Telegram:', user);
+            isAuthenticated = true;
+            renderResults();
         }
 
         function renderResults() {
