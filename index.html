@@ -111,10 +111,10 @@
                 </p>
 
                 <div class="space-y-2 pt-2">
-                    <button onclick="verifyAndShowResults()" class="w-full bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-gray-50 transition shadow-sm">
+                    <button onclick="verifyAndShowResults('Google')" class="w-full bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-gray-50 transition shadow-sm">
                         <span>Увійти через Google</span>
                     </button>
-                    <button onclick="verifyAndShowResults()" class="w-full bg-blue-500 text-white font-medium py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-blue-600 transition shadow-sm">
+                    <button onclick="verifyAndShowResults('Telegram')" class="w-full bg-blue-500 text-white font-medium py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-blue-600 transition shadow-sm">
                         <span>Увійти через Telegram</span>
                     </button>
                 </div>
@@ -148,7 +148,7 @@
 
     </main>
 
-    <!-- Модальне вікно для анкет із рядком адреси -->
+    <!-- Модальне вікно для анкет -->
     <div id="specialist-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl">
             <div class="flex justify-between items-center">
@@ -160,7 +160,6 @@
             <div class="space-y-2.5 text-xs">
                 <input type="text" id="modal-name" placeholder="Ім'я / Назва послуги" class="w-full border border-gray-200 rounded-xl px-3 py-2">
                 
-                <!-- Категорія -->
                 <select id="modal-category" class="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white">
                     <option value="">Оберіть категорію</option>
                     <option value="auto">🚗 Автомобільні послуги</option>
@@ -171,7 +170,6 @@
                     <option value="other">🏨 Інше</option>
                 </select>
 
-                <!-- Регіон -->
                 <select id="modal-region" class="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white">
                     <option value="">Оберіть регіон</option>
                     <option value="Abruzzo">Abruzzo</option>
@@ -196,9 +194,7 @@
                     <option value="Veneto">Veneto</option>
                 </select>
 
-                <!-- Рядок для точної адреси -->
                 <input type="text" id="modal-address" placeholder="Точна адреса або місто (напр. Via Roma 10, Milano)" class="w-full border border-gray-200 rounded-xl px-3 py-2">
-
                 <input type="text" id="modal-link" placeholder="Посилання на портфоліо / Instagram / Telegram" class="w-full border border-gray-200 rounded-xl px-3 py-2">
                 <button onclick="submitSpecialist()" class="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-700 transition">Надіслати на перевірку</button>
             </div>
@@ -207,7 +203,7 @@
 
     <!-- СКРІПТ ЛОГІКИ -->
     <script>
-        let isAuthenticated = false;
+        let isAuthenticated = false; // Статус верифікації за замовчуванням: не пройдено
         let map = null;
         let markers = [];
 
@@ -222,17 +218,19 @@
             document.getElementById(pageId).classList.remove('hidden');
         }
 
+        // Жорстка перевірка перед пошуком
         function startSearch() {
-            if (isAuthenticated) {
-                renderResults();
+            if (!isAuthenticated) {
+                showPage('auth-page'); // Якщо не верифікований — кидаємо на екран входу
             } else {
-                showPage('auth-page');
+                renderResults();     // Якщо вже входив — показуємо результати
             }
         }
 
-        function verifyAndShowResults() {
-            isAuthenticated = true;
-            renderResults();
+        // Викликається після успішного кліку на Google/Telegram
+        function verifyAndShowResults(provider) {
+            isAuthenticated = true; // Фіксуємо, що користувач пройшов верифікацію
+            renderResults();         // Показуємо результати
         }
 
         function renderResults() {
