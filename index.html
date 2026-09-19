@@ -57,11 +57,11 @@
             <div class="bg-white p-5 border border-gray-100 rounded-2xl shadow-sm space-y-4">
                 <h2 id="text-search-heading" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Пошук фахівця</h2>
                 
-                <input type="text" id="search-input" placeholder="Що ви шукаєте? (напр. авто, документи)..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
+                <input type="text" id="search-input" placeholder="Що ви шукаєте? (напр. сантехнік, авто)..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
 
                 <div class="space-y-3">
                     <select id="region-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-3 text-sm focus:outline-none">
-                        <option value="">Всі регіони Італії / Tutta Italia</option>
+                        <option value="" id="opt-all-regions">Всі регіони Італії / Tutta Italia</option>
                         <option value="Abruzzo">Abruzzo</option>
                         <option value="Basilicata">Basilicata</option>
                         <option value="Calabria">Calabria</option>
@@ -84,20 +84,22 @@
                         <option value="Veneto">Veneto</option>
                     </select>
 
+                    <!-- Категорії з двомовними назвами -->
                     <select id="category-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-3 text-sm focus:outline-none">
-                        <option value="">Усі категорії / Tutte le categorie</option>
-                        <option value="auto">🚗 Автомобільні послуги</option>
-                        <option value="bureaucracy">📄 Документи та легалізація</option>
-                        <option value="beauty">💅 Краса та здоров'я</option>
-                        <option value="realestate">🏠 Нерухомість та побут</option>
-                        <option value="transport">📦 Транспорт і посилки</option>
-                        <option value="other">🏨 Інше (готелі, освіта тощо)</option>
+                        <option value="" id="opt-all-cats">Усі категорії / Tutte le categorie</option>
+                        <option value="auto">🚗 Автомобільні послуги / Servizi auto</option>
+                        <option value="repairs">🔧 Ремонт та побутові послуги / Riparazioni e servizi domestici</option>
+                        <option value="bureaucracy">📄 Документи та легалізація / Documenti e legalizzazione</option>
+                        <option value="beauty">💅 Краса та здоров'я / Bellezza e salute</option>
+                        <option value="realestate">🏠 Нерухомість та житло / Immobiliare</option>
+                        <option value="transport">📦 Транспорт і посилки / Trasporti e pacchi</option>
+                        <option value="other">🏨 Інше / Altro</option>
                     </select>
 
                     <select id="format-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-3 text-sm focus:outline-none">
-                        <option value="">Будь-який формат (Офлайн / Онлайн)</option>
-                        <option value="offline">📍 Фізично на місці (Офлайн)</option>
-                        <option value="online">🌐 Тільки Онлайн по всій Італії</option>
+                        <option value="" id="opt-all-formats">Будь-який формат (Офлайн / Онлайн)</option>
+                        <option value="offline" id="opt-offline">📍 Фізично на місці (Офлайн)</option>
+                        <option value="online" id="opt-online">🌐 Тільки Онлайн по всій Італії</option>
                     </select>
                 </div>
 
@@ -116,7 +118,6 @@
                     Будь ласка, увійдіть через свій Google-акаунт, щоб отримати доступ до контактів та захистити платформу від ботів.
                 </p>
 
-                <!-- Офіційна кнопка Google Sign-In -->
                 <div class="pt-2 flex justify-center">
                     <div id="g_id_onload"
                          data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
@@ -135,33 +136,31 @@
 
                 <div id="auth-loader" class="hidden py-3 space-y-2">
                     <div class="animate-spin rounded-full h-7 w-7 border-b-2 border-blue-900 mx-auto"></div>
-                    <p class="text-sm text-blue-900 font-medium">Авторизація через Google...</p>
+                    <p id="text-auth-loading" class="text-sm text-blue-900 font-medium">Авторизація через Google...</p>
                 </div>
 
-                <button onclick="showPage('welcome-page')" class="text-sm text-gray-500 underline pt-2 block mx-auto">← Повернутися до пошуку</button>
+                <button onclick="showPage('welcome-page')" id="btn-back-search" class="text-sm text-gray-500 underline pt-2 block mx-auto">← Повернутися до пошуку</button>
             </div>
         </div>
 
         <!-- ЕКРАН 3: Список результатів та Мапа -->
         <div id="results-page" class="page hidden space-y-4">
             <div class="flex justify-between items-center">
-                <button onclick="showPage('welcome-page')" class="text-sm text-blue-600 font-bold">← Новий пошук</button>
+                <button onclick="showPage('welcome-page')" id="btn-new-search" class="text-sm text-blue-600 font-bold">← Новий пошук</button>
                 <div class="flex bg-gray-200 rounded-xl p-1 text-xs">
                     <button onclick="switchView('list')" id="view-list-btn" class="px-3.5 py-1.5 bg-white rounded-lg font-bold shadow-sm text-xs">Список</button>
                     <button onclick="switchView('map')" id="view-map-btn" class="px-3.5 py-1.5 text-gray-600 font-medium text-xs">Мапа</button>
                 </div>
             </div>
 
-            <!-- Контейнер для списку -->
             <div id="list-view-container" class="space-y-3.5">
                 <div id="results-count" class="text-xs font-medium text-gray-500">Знайдено: 3</div>
                 <div id="specialists-list" class="space-y-3.5"></div>
             </div>
 
-            <!-- Контейнер для мапи -->
             <div id="map-view-container" class="hidden space-y-2">
                 <div id="map"></div>
-                <p class="text-xs text-gray-500 text-center">Натисніть на мітку, щоб переглянути деталі фахівця.</p>
+                <p id="text-map-hint" class="text-xs text-gray-500 text-center">Натисніть на мітку, щоб переглянути деталі фахівця.</p>
             </div>
         </div>
 
@@ -171,26 +170,27 @@
     <div id="specialist-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-xl">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-blue-900 text-base">Анкета фахівця</h3>
+                <h3 id="modal-title-text" class="font-bold text-blue-900 text-base">Анкета фахівця</h3>
                 <button onclick="closeModal()" class="text-gray-400 font-bold text-base px-2">✕</button>
             </div>
-            <p class="text-xs text-gray-500">Заявка буде опублікована після перевірки модератором.</p>
+            <p id="modal-sub-text" class="text-xs text-gray-500">Заявка буде опублікована після перевірки модератором.</p>
 
             <div class="space-y-3 text-sm">
                 <input type="text" id="modal-name" placeholder="Ім'я / Назва послуги" class="w-full border border-gray-200 rounded-xl px-3.5 py-3">
                 
                 <select id="modal-category" class="w-full border border-gray-200 rounded-xl px-3.5 py-3 bg-white">
-                    <option value="">Оберіть категорію</option>
+                    <option value="" id="m-opt-cat">Оберіть категорію</option>
                     <option value="auto">🚗 Автомобільні послуги</option>
+                    <option value="repairs">🔧 Ремонт та побутові послуги</option>
                     <option value="bureaucracy">📄 Документи та легалізація</option>
                     <option value="beauty">💅 Краса та здоров'я</option>
-                    <option value="realestate">🏠 Нерухомість та побут</option>
+                    <option value="realestate">🏠 Нерухомість та житло</option>
                     <option value="transport">📦 Транспорт і посилки</option>
                     <option value="other">🏨 Інше</option>
                 </select>
 
                 <select id="modal-region" class="w-full border border-gray-200 rounded-xl px-3.5 py-3 bg-white">
-                    <option value="">Оберіть регіон</option>
+                    <option value="" id="m-opt-reg">Оберіть регіон</option>
                     <option value="Abruzzo">Abruzzo</option>
                     <option value="Basilicata">Basilicata</option>
                     <option value="Calabria">Calabria</option>
@@ -214,14 +214,14 @@
                 </select>
 
                 <select id="modal-format" class="w-full border border-gray-200 rounded-xl px-3.5 py-3 bg-white">
-                    <option value="">Формат надання послуги</option>
-                    <option value="offline">📍 Фізично на місці (Офлайн)</option>
-                    <option value="online">🌐 Працює онлайн по всій Італії</option>
+                    <option value="" id="m-opt-format">Формат надання послуги</option>
+                    <option value="offline" id="m-opt-off">📍 Фізично на місці (Офлайн)</option>
+                    <option value="online" id="m-opt-on">🌐 Працює онлайн по всій Італії</option>
                 </select>
 
                 <input type="text" id="modal-address" placeholder="Точна адреса або місто (напр. Via Roma 10, Milano)" class="w-full border border-gray-200 rounded-xl px-3.5 py-3">
                 <input type="text" id="modal-link" placeholder="Посилання на портфоліо / Instagram / Telegram" class="w-full border border-gray-200 rounded-xl px-3.5 py-3">
-                <button onclick="submitSpecialist()" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:bg-blue-700 transition shadow">Надіслати на перевірку</button>
+                <button onclick="submitSpecialist()" id="modal-submit-btn" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:bg-blue-700 transition shadow">Надіслати на перевірку</button>
             </div>
         </div>
     </div>
@@ -229,14 +229,118 @@
     <!-- СКРІПТ ЛОГІКИ -->
     <script>
         let isAuthenticated = false;
+        let currentLang = 'uk';
         let map = null;
         let markers = [];
 
         const specialists = [
             { id: 1, name: "Андрій Автосервіс", category: "auto", region: "Lombardia", format: "offline", address: "Via Padova 15, Milano", statusText: "Офлайн", desc: "Ремонт ходової, комп'ютерна діагностика.", link: "https://instagram.com", lat: 45.4642, lng: 9.1900 },
-            { id: 2, name: "Олена | Документи & SPID", category: "bureaucracy", region: "Lazio", format: "online", address: "Online / Roma", statusText: "Онлайн", desc: "Допомога з оформленням дозволів, записи до квестур.", link: "https://t.me", lat: 41.9028, lng: 12.4964 },
-            { id: 3, name: "Ірина Hair Studio", category: "beauty", region: "Emilia-Romagna", format: "offline", address: "Via Emilia 22, Parma", statusText: "Офлайн", desc: "Сучасні стрижки, фарбування, догляд.", link: "https://instagram.com", lat: 44.8015, lng: 10.3279 }
+            { id: 2, name: "Майстер Іван (Сантехнік)", category: "repairs", region: "Lombardia", format: "offline", address: "Via Torino 5, Milano", statusText: "Офлайн", desc: "Усунення протікань, встановлення сантехніки, бойлерів.", link: "https://t.me", lat: 45.4650, lng: 9.1890 },
+            { id: 3, name: "Олена | Документи & SPID", category: "bureaucracy", region: "Lazio", format: "online", address: "Online / Roma", statusText: "Онлайн", desc: "Допомога з оформленням дозволів, записи до квестур.", link: "https://t.me", lat: 41.9028, lng: 12.4964 },
+            { id: 4, name: "Ірина Hair Studio", category: "beauty", region: "Emilia-Romagna", format: "offline", address: "Via Emilia 22, Parma", statusText: "Офлайн", desc: "Сучасні стрижки, фарбування, догляд.", link: "https://instagram.com", lat: 44.8015, lng: 10.3279 }
         ];
+
+        const translations = {
+            uk: {
+                welcomeTitle: "Вітаємо у UA Italia Servizio",
+                welcomeSub: "Знайдіть перевірених українських фахівців по всій Італії або запропонуйте власні послуги спільноті.",
+                bannerTitle: "Ти фахівець в Італії?",
+                bannerSub: "Додай свої послуги до каталогу",
+                joinBtn: "Долучитись",
+                searchHeading: "Пошук фахівця",
+                searchInputPlaceholder: "Що ви шукаєте? (напр. сантехнік, авто)...",
+                allRegions: "Всі регіони Італії / Tutta Italia",
+                allCats: "Усі категорії / Tutte le categorie",
+                allFormats: "Будь-який формат (Офлайн / Онлайн)",
+                optOffline: "📍 Фізично на місці (Офлайн)",
+                optOnline: "🌐 Тільки Онлайн по всій Італії",
+                findBtn: "Шукати фахівців ➔",
+                authTitle: "Вхід для перегляду каталогу",
+                authDesc: "Будь ласка, увійдіть через свій Google-акаунт, щоб отримати доступ до контактів та захистити платформу від ботів.",
+                authLoading: "Авторизація через Google...",
+                backSearch: "← Повернутися до пошуку",
+                newSearch: "← Новий пошук",
+                mapHint: "Натисніть на мітку, щоб переглянути деталі фахівця.",
+                listBtn: "Список",
+                mapBtn: "Мапа",
+                modalTitle: "Анкета фахівця",
+                modalSub: "Заявка буде опублікована після перевірки модератором.",
+                mOptCat: "Оберіть категорію",
+                mOptReg: "Оберіть регіон",
+                mOptFormat: "Формат надання послуги",
+                mOptOff: "📍 Фізично на місці (Офлайн)",
+                mOptOn: "🌐 Працює онлайн по всій Італії",
+                modalSubmit: "Надіслати на перевірку"
+            },
+            it: {
+                welcomeTitle: "Benvenuti in UA Italia Servizio",
+                welcomeSub: "Trova professionisti ucraini qualificati in tutta Italia o proponi i tuoi servizi.",
+                bannerTitle: "Sei un professionista in Italia?",
+                bannerSub: "Aggiungi i tuoi servizi al catalogo",
+                joinBtn: "Unisciti",
+                searchHeading: "Cerca professionista",
+                searchInputPlaceholder: "Cosa cerchi? (es. idraulico, auto)...",
+                allRegions: "Tutta Italia",
+                allCats: "Tutte le categorie",
+                allFormats: "Qualsiasi formato (Offline / Online)",
+                optOffline: "📍 Sul posto (Offline)",
+                optOnline: "🌐 Solo Online in tutta Italia",
+                findBtn: "Cerca professionisti ➔",
+                authTitle: "Accesso per visualizzare il catalogo",
+                authDesc: "Accedi con il tuo account Google per accedere ai contatti e proteggere la piattaforma dai bot.",
+                authLoading: "Accesso con Google in corso...",
+                backSearch: "← Torna alla ricerca",
+                newSearch: "← Nuova ricerca",
+                mapHint: "Clicca su un indicatore per vedere i dettagli.",
+                listBtn: "Lista",
+                mapBtn: "Mappa",
+                modalTitle: "Modulo professionista",
+                modalSub: "La richiesta verrà pubblicata dopo la verifica del moderatore.",
+                mOptCat: "Seleziona categoria",
+                mOptReg: "Seleziona regione",
+                mOptFormat: "Formato del servizio",
+                mOptOff: "📍 Sul posto (Offline)",
+                mOptOn: "🌐 Online in tutta Italia",
+                modalSubmit: "Invia per la verifica"
+            }
+        };
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('btn-uk').className = lang === 'uk' ? 'text-sm px-3 py-1.5 rounded-lg bg-blue-900 text-white font-semibold' : 'text-sm px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 font-semibold';
+            document.getElementById('btn-it').className = lang === 'it' ? 'text-sm px-3 py-1.5 rounded-lg bg-blue-900 text-white font-semibold' : 'text-sm px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 font-semibold';
+
+            const t = translations[lang];
+            document.getElementById('text-welcome-title').innerText = t.welcomeTitle;
+            document.getElementById('text-welcome-sub').innerText = t.welcomeSub;
+            document.getElementById('text-banner-title').innerText = t.bannerTitle;
+            document.getElementById('text-banner-sub').innerText = t.bannerSub;
+            document.getElementById('btn-join').innerText = t.joinBtn;
+            document.getElementById('text-search-heading').innerText = t.searchHeading;
+            document.getElementById('search-input').placeholder = t.searchInputPlaceholder;
+            document.getElementById('opt-all-regions').innerText = t.allRegions;
+            document.getElementById('opt-all-cats').innerText = t.allCats;
+            document.getElementById('opt-all-formats').innerText = t.allFormats;
+            document.getElementById('opt-offline').innerText = t.optOffline;
+            document.getElementById('opt-online').innerText = t.optOnline;
+            document.getElementById('btn-find').innerText = t.findBtn;
+            document.getElementById('text-auth-title').innerText = t.authTitle;
+            document.getElementById('text-auth-desc').innerText = t.authDesc;
+            document.getElementById('text-auth-loading').innerText = t.authLoading;
+            document.getElementById('btn-back-search').innerText = t.backSearch;
+            document.getElementById('btn-new-search').innerText = t.newSearch;
+            document.getElementById('text-map-hint').innerText = t.mapHint;
+            document.getElementById('view-list-btn').innerText = t.listBtn;
+            document.getElementById('view-map-btn').innerText = t.mapBtn;
+            document.getElementById('modal-title-text').innerText = t.modalTitle;
+            document.getElementById('modal-sub-text').innerText = t.modalSub;
+            document.getElementById('m-opt-cat').innerText = t.mOptCat;
+            document.getElementById('m-opt-reg').innerText = t.mOptReg;
+            document.getElementById('m-opt-format').innerText = t.mOptFormat;
+            document.getElementById('m-opt-off').innerText = t.mOptOff;
+            document.getElementById('m-opt-on').innerText = t.mOptOn;
+            document.getElementById('modal-submit-btn').innerText = t.modalSubmit;
+        }
 
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
@@ -253,7 +357,6 @@
 
         function handleGoogleSignIn(response) {
             document.getElementById('auth-loader').classList.remove('hidden');
-            
             setTimeout(() => {
                 isAuthenticated = true;
                 document.getElementById('auth-loader').classList.add('hidden');
@@ -277,10 +380,10 @@
 
             const listContainer = document.getElementById('specialists-list');
             listContainer.innerHTML = '';
-            document.getElementById('results-count').innerText = `Знайдено: ${filtered.length}`;
+            document.getElementById('results-count').innerText = (currentLang === 'uk' ? 'Знайдено: ' : 'Trovati: ') + filtered.length;
 
             if (filtered.length === 0) {
-                listContainer.innerHTML = '<p class="text-center text-sm text-gray-400 py-8">Нічого не знайдено / Nessun risultato</p>';
+                listContainer.innerHTML = `<p class="text-center text-sm text-gray-400 py-8">${currentLang === 'uk' ? 'Нічого не знайдено' : 'Nessun risultato'}</p>`;
             } else {
                 filtered.forEach(item => {
                     const card = document.createElement('div');
@@ -293,7 +396,7 @@
                         <p class="text-sm text-gray-600">${item.desc}</p>
                         <div class="text-xs text-gray-500 font-medium">📍 ${item.region}, ${item.address}</div>
                         <div class="flex justify-end pt-2.5 border-t border-gray-50 text-xs">
-                            <a href="${item.link}" target="_blank" class="bg-blue-50 text-blue-600 font-bold px-3.5 py-2 rounded-xl hover:bg-blue-100 transition">Контакт ➔</a>
+                            <a href="${item.link}" target="_blank" class="bg-blue-50 text-blue-600 font-bold px-3.5 py-2 rounded-xl hover:bg-blue-100 transition">${currentLang === 'uk' ? 'Контакт ➔' : 'Contatta ➔'}</a>
                         </div>
                     `;
                     listContainer.appendChild(card);
@@ -343,7 +446,7 @@
             data.forEach(item => {
                 if (item.lat && item.lng) {
                     const marker = L.marker([item.lat, item.lng]).addTo(map)
-                        .bindPopup(`<b>${item.name}</b><br>${item.address}<br><a href="${item.link}" target="_blank" style="color:blue; font-weight:bold;">Портфоліо ➔</a>`);
+                        .bindPopup(`<b>${item.name}</b><br>${item.address}<br><a href="${item.link}" target="_blank" style="color:blue; font-weight:bold;">Portfolio ➔</a>`);
                     markers.push(marker);
                 }
             });
@@ -360,33 +463,16 @@
             const name = document.getElementById('modal-name').value;
             const category = document.getElementById('modal-category').value;
             const region = document.getElementById('modal-region').value;
-            const format = document.getElementById('modal-format-filter' || 'modal-format').value;
+            const format = document.getElementById('modal-format').value;
             const address = document.getElementById('modal-address').value;
             
             if(!name || !category || !region || !format || !address) {
-                alert("Будь ласка, заповніть усі поля!");
+                alert(currentLang === 'uk' ? "Будь ласка, заповніть усі поля!" : "Si prega di compilare tutti i campi!");
                 return;
             }
 
-            alert("Дякуємо! Ваша заявка надіслана на модерацію.");
+            alert(currentLang === 'uk' ? "Дякуємо! Ваша заявка надіслана на модерацію." : "Grazie! La tua richiesta è stata inviata per la moderazione.");
             closeModal();
-        }
-
-        const translations = {
-            uk: { welcomeTitle: "Вітаємо у UA Italia Servizio", welcomeSub: "Знайдіть перевірених українських фахівців по всій Італії.", bannerTitle: "Ти фахівець в Італії?", bannerSub: "Додай свої послуги до каталогу", joinBtn: "Долучитись", findBtn: "Шукати фахівців ➔" },
-            it: { welcomeTitle: "Benvenuti in UA Italia Servizio", welcomeSub: "Trova professionisti ucraini qualificati in tutta Italia.", bannerTitle: "Sei un professionista in Italia?", bannerSub: "Aggiungi i tuoi servizi al catalogo", joinBtn: "Unisciti", findBtn: "Cerca professionisti ➔" }
-        };
-
-        function switchLanguage(lang) {
-            document.getElementById('btn-uk').className = lang === 'uk' ? 'text-sm px-3 py-1.5 rounded-lg bg-blue-900 text-white font-semibold' : 'text-sm px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 font-semibold';
-            document.getElementById('btn-it').className = lang === 'it' ? 'text-sm px-3 py-1.5 rounded-lg bg-blue-900 text-white font-semibold' : 'text-sm px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 font-semibold';
-
-            document.getElementById('text-welcome-title').innerText = translations[lang].welcomeTitle;
-            document.getElementById('text-welcome-sub').innerText = translations[lang].welcomeSub;
-            document.getElementById('text-banner-title').innerText = translations[lang].bannerTitle;
-            document.getElementById('text-banner-sub').innerText = translations[lang].bannerSub;
-            document.getElementById('btn-join').innerText = translations[lang].joinBtn;
-            document.getElementById('btn-find').innerText = translations[lang].findBtn;
         }
     </script>
 </body>
