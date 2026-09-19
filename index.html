@@ -174,8 +174,8 @@
             </div>
             <p id="modal-sub-text" class="text-xs text-gray-500">Заявка буде опублікована після перевірки модератором.</p>
 
-            <!-- HTML Форма для відправки через Formspree (напряму в Telegram/пошту) -->
-            <form id="specialist-form" onsubmit="submitSpecialistForm(event)" class="space-y-3 text-sm">
+            <!-- Підключена форма Formspree -->
+            <form id="specialist-form" action="https://formspree.io/f/mljdgrzv" method="POST" onsubmit="submitSpecialistForm(event)" class="space-y-3 text-sm">
                 <input type="text" id="modal-name" name="name" placeholder="Ім'я / Назва послуги" class="w-full border border-gray-200 rounded-xl px-3.5 py-3" required>
                 
                 <select id="modal-category" name="category" class="w-full border border-gray-200 rounded-xl px-3.5 py-3 bg-white" required>
@@ -459,14 +459,13 @@
         function openModal() { document.getElementById('specialist-modal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('specialist-modal').classList.add('hidden'); }
         
-        // Функція обробки відправки форми (підготуємо для підключення вашого endpoint)
         function submitSpecialistForm(event) {
-            event.preventDefault();
-            
-            // Наразі виводимо повідомлення, а пізніше тут буде реальна відправка на Formspree/Telegram
-            alert(currentLang === 'uk' ? "Дякуємо! Ваша заявка надіслана на модерацію." : "Grazie! La tua richiesta è stata inviata per la moderazione.");
-            closeModal();
-            document.getElementById('specialist-form').reset();
+            // Форма відправиться стандартним шляхом на Formspree, після чого покажемо сповіщення та закриємо вікно
+            setTimeout(() => {
+                alert(currentLang === 'uk' ? "Дякуємо! Ваша заявка надіслана на модерацію." : "Grazie! La tua richiesta è stata inviata per la moderazione.");
+                closeModal();
+                document.getElementById('specialist-form').reset();
+            }, 500);
         }
     </script>
 </body>
