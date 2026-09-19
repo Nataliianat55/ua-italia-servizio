@@ -19,48 +19,48 @@
         #map { height: 350px; width: 100%; border-radius: 1rem; z-index: 10; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col justify-between">
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col justify-between text-base">
 
     <!-- Шапка сайту -->
     <header class="bg-white border-b border-gray-100 sticky top-0 z-30">
-        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-            <span onclick="showPage('welcome-page')" class="font-bold text-lg text-blue-900 cursor-pointer">UA Italia Servizio</span>
-            <div class="flex items-center gap-2">
-                <button onclick="switchLanguage('uk')" id="btn-uk" class="text-xs px-2 py-1 rounded bg-blue-900 text-white font-medium">UA</button>
-                <button onclick="switchLanguage('it')" id="btn-it" class="text-xs px-2 py-1 rounded bg-gray-200 text-gray-700 font-medium">IT</button>
+        <div class="max-w-md mx-auto px-4 py-3.5 flex items-center justify-between">
+            <span onclick="showPage('welcome-page')" class="font-bold text-xl text-blue-900 cursor-pointer">UA Italia Servizio</span>
+            <div class="flex items-center gap-2.5">
+                <button onclick="switchLanguage('uk')" id="btn-uk" class="text-sm px-3 py-1.5 rounded-lg bg-blue-900 text-white font-semibold">UA</button>
+                <button onclick="switchLanguage('it')" id="btn-it" class="text-sm px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 font-semibold">IT</button>
             </div>
         </div>
     </header>
 
     <!-- ОСНОВНИЙ КОНТЕНТ -->
-    <main class="max-w-md mx-auto px-4 py-6 flex-grow w-full">
+    <main class="max-w-md mx-auto px-4 py-6 flex-grow w-full space-y-5">
 
         <!-- ЕКРАН 1: Привітання та Пошук -->
         <div id="welcome-page" class="page space-y-6">
-            <div class="text-center space-y-2 py-4">
-                <h1 id="text-welcome-title" class="text-2xl font-bold text-blue-900">Вітаємо у UA Italia Servizio</h1>
-                <p id="text-welcome-sub" class="text-xs text-gray-500 leading-relaxed">
+            <div class="text-center space-y-2.5 py-2">
+                <h1 id="text-welcome-title" class="text-2xl font-bold text-blue-900 leading-snug">Вітаємо у UA Italia Servizio</h1>
+                <p id="text-welcome-sub" class="text-sm text-gray-600 leading-relaxed px-2">
                     Знайдіть перевірених українських фахівців по всій Італії або запропонуйте власні послуги спільноті.
                 </p>
             </div>
 
             <!-- Банер для фахівців -->
-            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4.5 flex items-center justify-between shadow-sm">
                 <div>
-                    <h2 id="text-banner-title" class="font-semibold text-blue-900 text-xs">Ти фахівець в Італії?</h2>
-                    <p id="text-banner-sub" class="text-[11px] text-blue-700 mt-0.5">Додай свої послуги до каталогу</p>
+                    <h2 id="text-banner-title" class="font-bold text-blue-900 text-sm">Ти фахівець в Італії?</h2>
+                    <p id="text-banner-sub" class="text-xs text-blue-700 mt-0.5">Додай свої послуги до каталогу</p>
                 </div>
-                <button onclick="openModal()" id="btn-join" class="bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-xl hover:bg-blue-700 transition">Долучитись</button>
+                <button onclick="openModal()" id="btn-join" class="bg-blue-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-blue-700 transition shadow-sm">Долучитись</button>
             </div>
 
             <!-- Форма пошуку -->
-            <div class="bg-white p-4 border border-gray-100 rounded-2xl shadow-sm space-y-3">
-                <h2 id="text-search-heading" class="text-xs font-bold text-gray-700 uppercase tracking-wider">Пошук фахівця</h2>
+            <div class="bg-white p-5 border border-gray-100 rounded-2xl shadow-sm space-y-4">
+                <h2 id="text-search-heading" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Пошук фахівця</h2>
                 
-                <input type="text" id="search-input" placeholder="Що ви шукаєте? (напр. авто, документи)..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
+                <input type="text" id="search-input" placeholder="Що ви шукаєте? (напр. авто, документи)..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
 
-                <div class="space-y-2">
-                    <select id="region-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none">
+                <div class="space-y-3">
+                    <select id="region-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-3 text-sm focus:outline-none">
                         <option value="">Всі регіони Італії / Tutta Italia</option>
                         <option value="Abruzzo">Abruzzo</option>
                         <option value="Basilicata">Basilicata</option>
@@ -84,7 +84,7 @@
                         <option value="Veneto">Veneto</option>
                     </select>
 
-                    <select id="category-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none">
+                    <select id="category-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-3 text-sm focus:outline-none">
                         <option value="">Усі категорії / Tutte le categorie</option>
                         <option value="auto">🚗 Автомобільні послуги</option>
                         <option value="bureaucracy">📄 Документи та легалізація</option>
@@ -94,25 +94,25 @@
                         <option value="other">🏨 Інше (готелі, освіта тощо)</option>
                     </select>
 
-                    <select id="format-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none">
+                    <select id="format-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-3 text-sm focus:outline-none">
                         <option value="">Будь-який формат (Офлайн / Онлайн)</option>
                         <option value="offline">📍 Фізично на місці (Офлайн)</option>
                         <option value="online">🌐 Тільки Онлайн по всій Італії</option>
                     </select>
                 </div>
 
-                <button onclick="startSearch()" id="btn-find" class="w-full bg-blue-900 text-white font-semibold py-3 rounded-xl text-xs hover:bg-blue-800 transition shadow">
+                <button onclick="startSearch()" id="btn-find" class="w-full bg-blue-900 text-white font-semibold py-3.5 rounded-xl text-sm hover:bg-blue-800 transition shadow">
                     Шукати фахівців ➔
                 </button>
             </div>
         </div>
 
         <!-- ЕКРАН 2: Верифікація через Google -->
-        <div id="auth-page" class="page hidden space-y-6 text-center py-8">
-            <div class="bg-white p-6 border border-gray-100 rounded-2xl shadow-sm space-y-4">
-                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-xl">🔒</div>
-                <h2 id="text-auth-title" class="text-base font-bold text-gray-900">Вхід для перегляду каталогу</h2>
-                <p id="text-auth-desc" class="text-xs text-gray-500 leading-relaxed">
+        <div id="auth-page" class="page hidden space-y-6 text-center py-6">
+            <div class="bg-white p-6 border border-gray-100 rounded-2xl shadow-sm space-y-5">
+                <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-2xl">🔒</div>
+                <h2 id="text-auth-title" class="text-lg font-bold text-gray-900">Вхід для перегляду каталогу</h2>
+                <p id="text-auth-desc" class="text-sm text-gray-600 leading-relaxed">
                     Будь ласка, увійдіть через свій Google-акаунт, щоб отримати доступ до контактів та захистити платформу від ботів.
                 </p>
 
@@ -133,35 +133,35 @@
                     </div>
                 </div>
 
-                <div id="auth-loader" class="hidden py-2 space-y-2">
-                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-900 mx-auto"></div>
-                    <p class="text-xs text-blue-900 font-medium">Авторизація через Google...</p>
+                <div id="auth-loader" class="hidden py-3 space-y-2">
+                    <div class="animate-spin rounded-full h-7 w-7 border-b-2 border-blue-900 mx-auto"></div>
+                    <p class="text-sm text-blue-900 font-medium">Авторизація через Google...</p>
                 </div>
 
-                <button onclick="showPage('welcome-page')" class="text-xs text-gray-400 underline pt-2 block mx-auto">← Повернутися до пошуку</button>
+                <button onclick="showPage('welcome-page')" class="text-sm text-gray-500 underline pt-2 block mx-auto">← Повернутися до пошуку</button>
             </div>
         </div>
 
         <!-- ЕКРАН 3: Список результатів та Мапа -->
         <div id="results-page" class="page hidden space-y-4">
             <div class="flex justify-between items-center">
-                <button onclick="showPage('welcome-page')" class="text-xs text-blue-600 font-semibold">← Новий пошук</button>
+                <button onclick="showPage('welcome-page')" class="text-sm text-blue-600 font-bold">← Новий пошук</button>
                 <div class="flex bg-gray-200 rounded-xl p-1 text-xs">
-                    <button onclick="switchView('list')" id="view-list-btn" class="px-3 py-1 bg-white rounded-lg font-semibold shadow-sm">Список</button>
-                    <button onclick="switchView('map')" id="view-map-btn" class="px-3 py-1 text-gray-600">Мапа</button>
+                    <button onclick="switchView('list')" id="view-list-btn" class="px-3.5 py-1.5 bg-white rounded-lg font-bold shadow-sm text-xs">Список</button>
+                    <button onclick="switchView('map')" id="view-map-btn" class="px-3.5 py-1.5 text-gray-600 font-medium text-xs">Мапа</button>
                 </div>
             </div>
 
             <!-- Контейнер для списку -->
-            <div id="list-view-container" class="space-y-3">
-                <div id="results-count" class="text-xs text-gray-400">Знайдено: 3</div>
-                <div id="specialists-list" class="space-y-3"></div>
+            <div id="list-view-container" class="space-y-3.5">
+                <div id="results-count" class="text-xs font-medium text-gray-500">Знайдено: 3</div>
+                <div id="specialists-list" class="space-y-3.5"></div>
             </div>
 
             <!-- Контейнер для мапи -->
             <div id="map-view-container" class="hidden space-y-2">
                 <div id="map"></div>
-                <p class="text-[10px] text-gray-400 text-center">Натисніть на мітку, щоб переглянути деталі фахівця.</p>
+                <p class="text-xs text-gray-500 text-center">Натисніть на мітку, щоб переглянути деталі фахівця.</p>
             </div>
         </div>
 
@@ -169,17 +169,17 @@
 
     <!-- Модальне вікно для анкет -->
     <div id="specialist-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-xl">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-blue-900 text-sm">Анкета фахівця</h3>
-                <button onclick="closeModal()" class="text-gray-400 font-bold text-sm">✕</button>
+                <h3 class="font-bold text-blue-900 text-base">Анкета фахівця</h3>
+                <button onclick="closeModal()" class="text-gray-400 font-bold text-base px-2">✕</button>
             </div>
             <p class="text-xs text-gray-500">Заявка буде опублікована після перевірки модератором.</p>
 
-            <div class="space-y-2.5 text-xs">
-                <input type="text" id="modal-name" placeholder="Ім'я / Назва послуги" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+            <div class="space-y-3 text-sm">
+                <input type="text" id="modal-name" placeholder="Ім'я / Назва послуги" class="w-full border border-gray-200 rounded-xl px-3.5 py-3">
                 
-                <select id="modal-category" class="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white">
+                <select id="modal-category" class="w-full border border-gray-200 rounded-xl px-3.5 py-3 bg-white">
                     <option value="">Оберіть категорію</option>
                     <option value="auto">🚗 Автомобільні послуги</option>
                     <option value="bureaucracy">📄 Документи та легалізація</option>
@@ -189,7 +189,7 @@
                     <option value="other">🏨 Інше</option>
                 </select>
 
-                <select id="modal-region" class="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white">
+                <select id="modal-region" class="w-full border border-gray-200 rounded-xl px-3.5 py-3 bg-white">
                     <option value="">Оберіть регіон</option>
                     <option value="Abruzzo">Abruzzo</option>
                     <option value="Basilicata">Basilicata</option>
@@ -213,15 +213,15 @@
                     <option value="Veneto">Veneto</option>
                 </select>
 
-                <select id="modal-format" class="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white">
+                <select id="modal-format" class="w-full border border-gray-200 rounded-xl px-3.5 py-3 bg-white">
                     <option value="">Формат надання послуги</option>
                     <option value="offline">📍 Фізично на місці (Офлайн)</option>
                     <option value="online">🌐 Працює онлайн по всій Італії</option>
                 </select>
 
-                <input type="text" id="modal-address" placeholder="Точна адреса або місто (напр. Via Roma 10, Milano)" class="w-full border border-gray-200 rounded-xl px-3 py-2">
-                <input type="text" id="modal-link" placeholder="Посилання на портфоліо / Instagram / Telegram" class="w-full border border-gray-200 rounded-xl px-3 py-2">
-                <button onclick="submitSpecialist()" class="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-700 transition">Надіслати на перевірку</button>
+                <input type="text" id="modal-address" placeholder="Точна адреса або місто (напр. Via Roma 10, Milano)" class="w-full border border-gray-200 rounded-xl px-3.5 py-3">
+                <input type="text" id="modal-link" placeholder="Посилання на портфоліо / Instagram / Telegram" class="w-full border border-gray-200 rounded-xl px-3.5 py-3">
+                <button onclick="submitSpecialist()" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:bg-blue-700 transition shadow">Надіслати на перевірку</button>
             </div>
         </div>
     </div>
@@ -251,13 +251,9 @@
             }
         }
 
-        // Реальна функція, яку викликає офіційний віджет Google після успішного входу
         function handleGoogleSignIn(response) {
             document.getElementById('auth-loader').classList.remove('hidden');
             
-            // response.credential містить зашифрований JWT токен безпеки від Google
-            console.log("Успішна авторизація Google. Токен отримано.");
-
             setTimeout(() => {
                 isAuthenticated = true;
                 document.getElementById('auth-loader').classList.add('hidden');
@@ -284,20 +280,20 @@
             document.getElementById('results-count').innerText = `Знайдено: ${filtered.length}`;
 
             if (filtered.length === 0) {
-                listContainer.innerHTML = '<p class="text-center text-xs text-gray-400 py-6">Нічого не знайдено / Nessun risultato</p>';
+                listContainer.innerHTML = '<p class="text-center text-sm text-gray-400 py-8">Нічого не знайдено / Nessun risultato</p>';
             } else {
                 filtered.forEach(item => {
                     const card = document.createElement('div');
-                    card.className = "bg-white border border-gray-100 rounded-2xl p-4 shadow-sm space-y-2";
+                    card.className = "bg-white border border-gray-100 rounded-2xl p-4.5 shadow-sm space-y-2.5";
                     card.innerHTML = `
                         <div class="flex justify-between items-start">
-                            <h3 class="font-semibold text-sm text-gray-900">${item.name}</h3>
-                            <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium">${item.statusText}</span>
+                            <h3 class="font-bold text-base text-gray-900">${item.name}</h3>
+                            <span class="text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full font-semibold">${item.statusText}</span>
                         </div>
-                        <p class="text-xs text-gray-600">${item.desc}</p>
-                        <div class="text-[11px] text-gray-500">📍 ${item.region}, ${item.address}</div>
-                        <div class="flex justify-end pt-2 border-t border-gray-50 text-xs">
-                            <a href="${item.link}" target="_blank" class="bg-blue-50 text-blue-600 font-semibold px-3 py-1.5 rounded-xl hover:bg-blue-100 transition">Контакт ➔</a>
+                        <p class="text-sm text-gray-600">${item.desc}</p>
+                        <div class="text-xs text-gray-500 font-medium">📍 ${item.region}, ${item.address}</div>
+                        <div class="flex justify-end pt-2.5 border-t border-gray-50 text-xs">
+                            <a href="${item.link}" target="_blank" class="bg-blue-50 text-blue-600 font-bold px-3.5 py-2 rounded-xl hover:bg-blue-100 transition">Контакт ➔</a>
                         </div>
                     `;
                     listContainer.appendChild(card);
@@ -318,13 +314,13 @@
             if (view === 'list') {
                 listContainer.classList.remove('hidden');
                 mapContainer.classList.add('hidden');
-                listBtn.className = "px-3 py-1 bg-white rounded-lg font-semibold shadow-sm";
-                mapBtn.className = "px-3 py-1 text-gray-600";
+                listBtn.className = "px-3.5 py-1.5 bg-white rounded-lg font-bold shadow-sm text-xs";
+                mapBtn.className = "px-3.5 py-1.5 text-gray-600 font-medium text-xs";
             } else {
                 listContainer.classList.add('hidden');
                 mapContainer.classList.remove('hidden');
-                mapBtn.className = "px-3 py-1 bg-white rounded-lg font-semibold shadow-sm";
-                listBtn.className = "px-3 py-1 text-gray-600";
+                mapBtn.className = "px-3.5 py-1.5 bg-white rounded-lg font-bold shadow-sm text-xs";
+                listBtn.className = "px-3.5 py-1.5 text-gray-600 font-medium text-xs";
 
                 setTimeout(() => {
                     initMap(window.currentFiltered || specialists);
@@ -347,7 +343,7 @@
             data.forEach(item => {
                 if (item.lat && item.lng) {
                     const marker = L.marker([item.lat, item.lng]).addTo(map)
-                        .bindPopup(`<b>${item.name}</b><br>${item.address}<br><a href="${item.link}" target="_blank" style="color:blue;">Портфоліо ➔</a>`);
+                        .bindPopup(`<b>${item.name}</b><br>${item.address}<br><a href="${item.link}" target="_blank" style="color:blue; font-weight:bold;">Портфоліо ➔</a>`);
                     markers.push(marker);
                 }
             });
@@ -364,7 +360,7 @@
             const name = document.getElementById('modal-name').value;
             const category = document.getElementById('modal-category').value;
             const region = document.getElementById('modal-region').value;
-            const format = document.getElementById('modal-format').value;
+            const format = document.getElementById('modal-format-filter' || 'modal-format').value;
             const address = document.getElementById('modal-address').value;
             
             if(!name || !category || !region || !format || !address) {
@@ -382,8 +378,8 @@
         };
 
         function switchLanguage(lang) {
-            document.getElementById('btn-uk').className = lang === 'uk' ? 'text-xs px-2 py-1 rounded bg-blue-900 text-white font-medium' : 'text-xs px-2 py-1 rounded bg-gray-200 text-gray-700 font-medium';
-            document.getElementById('btn-it').className = lang === 'it' ? 'text-xs px-2 py-1 rounded bg-blue-900 text-white font-medium' : 'text-xs px-2 py-1 rounded bg-gray-200 text-gray-700 font-medium';
+            document.getElementById('btn-uk').className = lang === 'uk' ? 'text-sm px-3 py-1.5 rounded-lg bg-blue-900 text-white font-semibold' : 'text-sm px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 font-semibold';
+            document.getElementById('btn-it').className = lang === 'it' ? 'text-sm px-3 py-1.5 rounded-lg bg-blue-900 text-white font-semibold' : 'text-sm px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 font-semibold';
 
             document.getElementById('text-welcome-title').innerText = translations[lang].welcomeTitle;
             document.getElementById('text-welcome-sub').innerText = translations[lang].welcomeSub;
