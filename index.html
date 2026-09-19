@@ -84,7 +84,6 @@
                         <option value="Veneto">Veneto</option>
                     </select>
 
-                    <!-- Категорії з двомовними назвами -->
                     <select id="category-filter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-3 text-sm focus:outline-none">
                         <option value="" id="opt-all-cats">Усі категорії / Tutte le categorie</option>
                         <option value="auto">🚗 Автомобільні послуги / Servizi auto</option>
@@ -175,10 +174,11 @@
             </div>
             <p id="modal-sub-text" class="text-xs text-gray-500">Заявка буде опублікована після перевірки модератором.</p>
 
-            <div class="space-y-3 text-sm">
-                <input type="text" id="modal-name" placeholder="Ім'я / Назва послуги" class="w-full border border-gray-200 rounded-xl px-3.5 py-3">
+            <!-- HTML Форма для відправки через Formspree (напряму в Telegram/пошту) -->
+            <form id="specialist-form" onsubmit="submitSpecialistForm(event)" class="space-y-3 text-sm">
+                <input type="text" id="modal-name" name="name" placeholder="Ім'я / Назва послуги" class="w-full border border-gray-200 rounded-xl px-3.5 py-3" required>
                 
-                <select id="modal-category" class="w-full border border-gray-200 rounded-xl px-3.5 py-3 bg-white">
+                <select id="modal-category" name="category" class="w-full border border-gray-200 rounded-xl px-3.5 py-3 bg-white" required>
                     <option value="" id="m-opt-cat">Оберіть категорію</option>
                     <option value="auto">🚗 Автомобільні послуги</option>
                     <option value="repairs">🔧 Ремонт та побутові послуги</option>
@@ -189,7 +189,7 @@
                     <option value="other">🏨 Інше</option>
                 </select>
 
-                <select id="modal-region" class="w-full border border-gray-200 rounded-xl px-3.5 py-3 bg-white">
+                <select id="modal-region" name="region" class="w-full border border-gray-200 rounded-xl px-3.5 py-3 bg-white" required>
                     <option value="" id="m-opt-reg">Оберіть регіон</option>
                     <option value="Abruzzo">Abruzzo</option>
                     <option value="Basilicata">Basilicata</option>
@@ -213,16 +213,16 @@
                     <option value="Veneto">Veneto</option>
                 </select>
 
-                <select id="modal-format" class="w-full border border-gray-200 rounded-xl px-3.5 py-3 bg-white">
+                <select id="modal-format" name="format" class="w-full border border-gray-200 rounded-xl px-3.5 py-3 bg-white" required>
                     <option value="" id="m-opt-format">Формат надання послуги</option>
                     <option value="offline" id="m-opt-off">📍 Фізично на місці (Офлайн)</option>
                     <option value="online" id="m-opt-on">🌐 Працює онлайн по всій Італії</option>
                 </select>
 
-                <input type="text" id="modal-address" placeholder="Точна адреса або місто (напр. Via Roma 10, Milano)" class="w-full border border-gray-200 rounded-xl px-3.5 py-3">
-                <input type="text" id="modal-link" placeholder="Посилання на портфоліо / Instagram / Telegram" class="w-full border border-gray-200 rounded-xl px-3.5 py-3">
-                <button onclick="submitSpecialist()" id="modal-submit-btn" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:bg-blue-700 transition shadow">Надіслати на перевірку</button>
-            </div>
+                <input type="text" id="modal-address" name="address" placeholder="Точна адреса або місто (напр. Via Roma 10, Milano)" class="w-full border border-gray-200 rounded-xl px-3.5 py-3" required>
+                <input type="text" id="modal-link" name="contact" placeholder="Посилання на портфоліо / Instagram / Telegram" class="w-full border border-gray-200 rounded-xl px-3.5 py-3" required>
+                <button type="submit" id="modal-submit-btn" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:bg-blue-700 transition shadow">Надіслати на перевірку</button>
+            </form>
         </div>
     </div>
 
@@ -459,20 +459,14 @@
         function openModal() { document.getElementById('specialist-modal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('specialist-modal').classList.add('hidden'); }
         
-        function submitSpecialist() {
-            const name = document.getElementById('modal-name').value;
-            const category = document.getElementById('modal-category').value;
-            const region = document.getElementById('modal-region').value;
-            const format = document.getElementById('modal-format').value;
-            const address = document.getElementById('modal-address').value;
+        // Функція обробки відправки форми (підготуємо для підключення вашого endpoint)
+        function submitSpecialistForm(event) {
+            event.preventDefault();
             
-            if(!name || !category || !region || !format || !address) {
-                alert(currentLang === 'uk' ? "Будь ласка, заповніть усі поля!" : "Si prega di compilare tutti i campi!");
-                return;
-            }
-
+            // Наразі виводимо повідомлення, а пізніше тут буде реальна відправка на Formspree/Telegram
             alert(currentLang === 'uk' ? "Дякуємо! Ваша заявка надіслана на модерацію." : "Grazie! La tua richiesta è stata inviata per la moderazione.");
             closeModal();
+            document.getElementById('specialist-form').reset();
         }
     </script>
 </body>
