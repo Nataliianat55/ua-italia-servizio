@@ -118,7 +118,7 @@
                 <div id="specialists-list" class="space-y-3"></div>
             </div>
 
-            <!-- Контейнер для мапи (спочатку прихований) -->
+            <!-- Контейнер для мапи -->
             <div id="map-view-container" class="hidden space-y-2">
                 <div id="map"></div>
                 <p class="text-[10px] text-gray-400 text-center">Натисніть на мітку, щоб переглянути деталі фахівця.</p>
@@ -127,7 +127,7 @@
 
     </main>
 
-    <!-- Модальне вікно для анкет -->
+    <!-- Модальне вікно для анкет із випадаючими списками -->
     <div id="specialist-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl">
             <div class="flex justify-between items-center">
@@ -137,11 +137,26 @@
             <p class="text-xs text-gray-500">Заявка буде опублікована після перевірки модератором.</p>
 
             <div class="space-y-2.5 text-xs">
-                <input type="text" placeholder="Ім'я / Послуга" class="w-full border border-gray-200 rounded-xl px-3 py-2">
-                <input type="text" placeholder="Категорія (auto, bureaucracy, beauty)" class="w-full border border-gray-200 rounded-xl px-3 py-2">
-                <input type="text" placeholder="Регіон / Місто" class="w-full border border-gray-200 rounded-xl px-3 py-2">
-                <input type="text" placeholder="Посилання на портфоліо / Instagram" class="w-full border border-gray-200 rounded-xl px-3 py-2">
-                <button onclick="submitSpecialist()" class="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-700 transition">Надіслати</button>
+                <input type="text" id="modal-name" placeholder="Ім'я / Назва послуги" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+                
+                <!-- Випадаючий список категорій -->
+                <select id="modal-category" class="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white">
+                    <option value="">Оберіть категорію</option>
+                    <option value="auto">🚗 Автомобільні послуги</option>
+                    <option value="bureaucracy">📄 Документи та легалізація</option>
+                    <option value="beauty">💅 Краса та здоров'я</option>
+                </select>
+
+                <!-- Випадаючий список регіонів -->
+                <select id="modal-region" class="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white">
+                    <option value="">Оберіть регіон</option>
+                    <option value="Lombardia">Lombardia</option>
+                    <option value="Lazio">Lazio</option>
+                    <option value="Emilia-Romagna">Emilia-Romagna</option>
+                </select>
+
+                <input type="text" id="modal-link" placeholder="Посилання на портфоліо / Instagram / Telegram" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+                <button onclick="submitSpecialist()" class="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-700 transition">Надіслати на перевірку</button>
             </div>
         </div>
     </div>
@@ -152,7 +167,6 @@
         let map = null;
         let markers = [];
 
-        // Демо-база фахівців з координатами (широта, довгота для мапи)
         const specialists = [
             { id: 1, name: "Андрій Автосервіс", category: "auto", region: "Lombardia", status: "Офлайн (Мілан)", desc: "Ремонт ходової, комп'ютерна діагностика.", link: "https://instagram.com", lat: 45.4642, lng: 9.1900 },
             { id: 2, name: "Олена | Документи & SPID", category: "bureaucracy", region: "Lazio", status: "Онлайн по всій Італії", desc: "Допомога з оформленням дозволів, записи до квестур.", link: "https://t.me", lat: 41.9028, lng: 12.4964 },
@@ -189,7 +203,6 @@
                 return matchesSearch && matchesRegion && matchesCategory;
             });
 
-            // Рендер списку
             const listContainer = document.getElementById('specialists-list');
             listContainer.innerHTML = '';
             document.getElementById('results-count').innerText = `Знайдено: ${filtered.length}`;
@@ -215,13 +228,11 @@
                 });
             }
 
-            // Зберігаємо відфільтровані для мапи
             window.currentFiltered = filtered;
             showPage('results-page');
             switchView('list');
         }
 
-        // Перемикач між списком і мапою
         function switchView(view) {
             const listContainer = document.getElementById('list-view-container');
             const mapContainer = document.getElementById('map-view-container');
@@ -239,17 +250,14 @@
                 mapBtn.className = "px-3 py-1 bg-white rounded-lg font-semibold shadow-sm";
                 listBtn.className = "px-3 py-1 text-gray-600";
 
-                // Ініціалізація мапи, якщо ще не створена
                 setTimeout(() => {
                     initMap(window.currentFiltered || specialists);
                 }, 200);
             }
         }
 
-        // Ініціалізація OpenStreetMap через Leaflet
         function initMap(data) {
             if (!map) {
-                // Центр Італії за замовчуванням
                 map = L.map('map').setView([41.8719, 12.5674], 6);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
@@ -257,11 +265,9 @@
                 }).addTo(map);
             }
 
-            // Очищаємо попередні мітки
             markers.forEach(m => map.removeLayer(m));
             markers = [];
 
-            // Додаємо нові мітки на мапу
             data.forEach(item => {
                 if (item.lat && item.lng) {
                     const marker = L.marker([item.lat, item.lng]).addTo(map)
@@ -270,7 +276,6 @@
                 }
             });
 
-            // Якщо є результати, налаштовуємо масштаб під них
             if (data.length > 0 && data[0].lat) {
                 map.setView([data[0].lat, data[0].lng], 7);
             }
@@ -278,12 +283,21 @@
 
         function openModal() { document.getElementById('specialist-modal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('specialist-modal').classList.add('hidden'); }
+        
         function submitSpecialist() {
+            const name = document.getElementById('modal-name').value;
+            const category = document.getElementById('modal-category').value;
+            const region = document.getElementById('modal-region').value;
+            
+            if(!name || !category || !region) {
+                alert("Будь ласка, заповніть обов'язкові поля!");
+                return;
+            }
+
             alert("Дякуємо! Ваша заявка надіслана на модерацію.");
             closeModal();
         }
 
-        // Переклад UA/IT
         const translations = {
             uk: { welcomeTitle: "Вітаємо у UA Italia Servizio", welcomeSub: "Знайдіть перевірених українських фахівців по всій Італії.", bannerTitle: "Ти фахівець в Італії?", bannerSub: "Додай свої послуги до каталогу", joinBtn: "Долучитись", findBtn: "Шукати фахівців ➔" },
             it: { welcomeTitle: "Benvenuti in UA Italia Servizio", welcomeSub: "Trova professionisti ucraini qualificati in tutta Italia.", bannerTitle: "Sei un professionista in Italia?", bannerSub: "Aggiungi i tuoi servizi al catalogo", joinBtn: "Unisciti", findBtn: "Cerca professionisti ➔" }
